@@ -13,7 +13,7 @@ ${PREMIERE_ANNONCE_TRIGGER}    xpath=(//div[contains(@class,'infobox_trigger')]/
 
 ${CHAMP_RESERVATION_ARRIVEE}   name=arrive
 ${CHAMP_RESERVATION_DEPART}    name=depart
-${CHAMP_RESERVATION_VOYAGEURS} name=guests
+${CHAMP_RESERVATION_VOYAGEURS}    name=guests
 ${BTN_DEMANDE_RESERVATION}     id=request_for_reservation
 ${MSG_CONNEXION_POUR_RESERVATION}    Vous devez vous connecter
 
