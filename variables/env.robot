@@ -55,3 +55,10 @@ ${HIDDEN_LISTING_TITLE}        css=#modal-contact-host input[name="listing_title
 ${HIDDEN_ACTION}               css=#modal-contact-host input[name="action"]
 
 ${DEUXIEME_ANNONCE_TRIGGER}    css=.item-wrap:nth-child(2) .hover-effect
+
+${CALENDRIER_DATE_1_CONNECTE}      css=.sidebar-booking-module-body:nth-child(2) .single-listing-calendar-wrap:nth-child(1) .current-month:nth-child(20) > .day-number
+${CALENDRIER_DATE_2_CONNECTE}      css=.block-body-sidebar > #single-listing-date-range > #single-booking-search-calendar > .single-listing-calendar-wrap:nth-child(2) .current-month:nth-child(30) > .day-number
+${BTN_ADULTE_PLUS_CONNECTE}        css=.sidebar-booking-module-body:nth-child(2) .adult_plus > .fa
+${BTN_ENFANT_PLUS_CONNECTE}        css=.sidebar-booking-module-body:nth-child(2) .child_plus
+${BTN_APPLIQUER_VOYAGEURS_CONNECTE}    css=.sidebar-booking-module-body:nth-child(2) .guest-apply-btn > .btn
+${BTN_FINALISER_APRES_DEMANDE}     css=.block-body-sidebar .payment-list-price-detail
