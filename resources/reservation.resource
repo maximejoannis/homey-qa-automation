@@ -93,3 +93,22 @@ Se Connecter En Tant Qu Utilisateur Reservation
 Finaliser Le Parcours Apres Demande De Reservation
     Wait Until Page Contains Element    css=.block-body-sidebar .payment-list-price-detail    ${TIMEOUT_LONG}
     Cliquer Sur Element De Facon Robuste    css=.block-body-sidebar .payment-list-price-detail
+
+Selectionner Une Date D Arrivee Et Une Date De Depart Connecte
+    Wait Until Element Is Visible    name=arrive    ${TIMEOUT_UI}
+    Cliquer Sur Element De Facon Robuste    name=arrive
+    Wait Until Page Contains Element    ${CALENDRIER_DATE_1_CONNECTE}    ${TIMEOUT_LONG}
+    Cliquer Sur Element De Facon Robuste    ${CALENDRIER_DATE_1_CONNECTE}
+    Wait Until Page Contains Element    ${CALENDRIER_DATE_2_CONNECTE}    ${TIMEOUT_LONG}
+    Cliquer Sur Element De Facon Robuste    ${CALENDRIER_DATE_2_CONNECTE}
+
+Selectionner Des Voyageurs Connecte
+    Cliquer Sur Element De Facon Robuste    name=guests
+    Cliquer Sur Element De Facon Robuste    ${BTN_ADULTE_PLUS_CONNECTE}
+    Cliquer Sur Element De Facon Robuste    ${BTN_ADULTE_PLUS_CONNECTE}
+    Cliquer Sur Element De Facon Robuste    ${BTN_ENFANT_PLUS_CONNECTE}
+    Cliquer Sur Element De Facon Robuste    ${BTN_APPLIQUER_VOYAGEURS_CONNECTE}
+
+Finaliser Le Parcours Apres Demande De Reservation
+    Wait Until Page Contains Element    ${BTN_FINALISER_APRES_DEMANDE}    ${TIMEOUT_LONG}
+    Cliquer Sur Element De Facon Robuste    ${BTN_FINALISER_APRES_DEMANDE}
