@@ -344,7 +344,4 @@ Ce projet démontre :
 
 **Maxime Joannis**
 
-QA Automation Engineer en progression
-Projet orienté qualité, structuration et industrialisation des tests
-je t’upgrade le `robot.yml` pour intégrer **toute la couche IA + reporting automatique propre** 🔥
-```
+QA Automation Engineer en progressio
