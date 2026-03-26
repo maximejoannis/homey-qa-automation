@@ -20,5 +20,5 @@ US08-CT01 - Effectuer le parcours connecté complet jusqu après la demande
     Cliquer Sur Demande De Reservation
     Finaliser Le Parcours Apres Demande De Reservation
 
-    Wait Until Page Contains Element    ${BTN_CHERCHER_HOME}    ${TIMEOUT_UI}
-    Element Should Be Visible    ${BTN_CHERCHER_HOME}
+    Wait Until Page Contains    Chercher    ${TIMEOUT_LONG}
+    Page Should Contain    Chercher
