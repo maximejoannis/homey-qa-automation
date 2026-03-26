@@ -19,4 +19,5 @@ US08-CT01 - Effectuer le parcours connecté complet jusqu après la demande
     Selectionner Des Voyageurs Connecte
     Cliquer Sur Demande De Reservation
     Finaliser Le Parcours Apres Demande De Reservation
+
     Page Should Contain Element    xpath=//a[contains(text(),'Accueil')]
