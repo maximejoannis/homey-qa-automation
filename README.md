@@ -344,4 +344,4 @@ Ce projet démontre :
 
 **Maxime Joannis**
 
-QA Automation Engineer en progressio
+QA Automation Engineer en progression
