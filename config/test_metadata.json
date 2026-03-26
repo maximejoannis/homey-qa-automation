@@ -1,0 +1,128 @@
+{
+  "US07-CT01 - Vérifier la présence du module de réservation sur une annonce": {
+    "business_criticality": 5,
+    "suite": "us07",
+    "type": "smoke",
+    "stability": 5,
+    "owner": "qa"
+  },
+  "US07-CT02 - Sélectionner une date d'arrivée et une date de départ": {
+    "business_criticality": 5,
+    "suite": "us07",
+    "type": "regression",
+    "stability": 2,
+    "owner": "qa"
+  },
+  "US07-CT03 - Sélectionner des voyageurs": {
+    "business_criticality": 4,
+    "suite": "us07",
+    "type": "smoke",
+    "stability": 4,
+    "owner": "qa"
+  },
+  "US07-CT04 - Sélectionner l'extra Breakfast": {
+    "business_criticality": 3,
+    "suite": "us07",
+    "type": "regression",
+    "stability": 4,
+    "owner": "qa"
+  },
+  "US07-CT05 - Vérifier le message de connexion lors d'une demande non connectée": {
+    "business_criticality": 5,
+    "suite": "us07",
+    "type": "regression",
+    "stability": 3,
+    "owner": "qa"
+  },
+  "US07-CT06 - Vérifier les attributs des champs de réservation": {
+    "business_criticality": 2,
+    "suite": "us07",
+    "type": "ui",
+    "stability": 5,
+    "owner": "qa"
+  },
+  "US07-CT07 - Ouvrir le calendrier depuis le champ arrivée": {
+    "business_criticality": 3,
+    "suite": "us07",
+    "type": "ui",
+    "stability": 2,
+    "owner": "qa"
+  },
+  "US07-CT08 - Ouvrir le sélecteur de voyageurs": {
+    "business_criticality": 3,
+    "suite": "us07",
+    "type": "smoke",
+    "stability": 4,
+    "owner": "qa"
+  },
+  "US07-CT09 - Sélectionner l'extra Lunch": {
+    "business_criticality": 2,
+    "suite": "us07",
+    "type": "regression",
+    "stability": 4,
+    "owner": "qa"
+  },
+  "US07-CT10 - Sélectionner plusieurs extras": {
+    "business_criticality": 2,
+    "suite": "us07",
+    "type": "regression",
+    "stability": 4,
+    "owner": "qa"
+  },
+  "CONTACT-CT01 - Ouvrir la modal contacter l'hôte": {
+    "business_criticality": 4,
+    "suite": "contact_hote",
+    "type": "regression",
+    "stability": 3,
+    "owner": "qa"
+  },
+  "CONTACT-CT02 - Vérifier la présence des champs du formulaire": {
+    "business_criticality": 4,
+    "suite": "contact_hote",
+    "type": "smoke",
+    "stability": 5,
+    "owner": "qa"
+  },
+  "CONTACT-CT03 - Renseigner les champs du formulaire": {
+    "business_criticality": 4,
+    "suite": "contact_hote",
+    "type": "smoke",
+    "stability": 5,
+    "owner": "qa"
+  },
+  "CONTACT-CT04 - Fermer la modal via le bouton de fermeture": {
+    "business_criticality": 3,
+    "suite": "contact_hote",
+    "type": "regression",
+    "stability": 5,
+    "owner": "qa"
+  },
+  "CONTACT-CT05 - Vérifier la présence des champs cachés du formulaire": {
+    "business_criticality": 2,
+    "suite": "contact_hote",
+    "type": "ui",
+    "stability": 5,
+    "owner": "qa"
+  },
+  "CONTACT-CT06 - Vérifier les placeholders et attributs principaux": {
+    "business_criticality": 2,
+    "suite": "contact_hote",
+    "type": "ui",
+    "stability": 5,
+    "owner": "qa"
+  },
+  "CONTACT-CT07 - Soumettre le formulaire": {
+    "business_criticality": 5,
+    "suite": "contact_hote",
+    "type": "regression",
+    "stability": 3,
+    "owner": "qa"
+  },
+  "CONTACT-CT08 - Vérifier le titre de la modal": {
+    "business_criticality": 1,
+    "suite": "contact_hote",
+    "type": "ui",
+    "stability": 5,
+    "owner": "qa"
+  }
+}
