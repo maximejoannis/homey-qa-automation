@@ -53,3 +53,5 @@ ${HIDDEN_HOST_CONTACT_SECURITY}    css=#modal-contact-host input[name="host_cont
 ${HIDDEN_PERMALINK}            css=#modal-contact-host input[name="permalink"]
 ${HIDDEN_LISTING_TITLE}        css=#modal-contact-host input[name="listing_title"]
 ${HIDDEN_ACTION}               css=#modal-contact-host input[name="action"]
+
+${DEUXIEME_ANNONCE_TRIGGER}    css=.item-wrap:nth-child(2) .hover-effect
