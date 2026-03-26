@@ -6,3 +6,6 @@ ${CONTACT_NOM}             JOANNIS
 ${CONTACT_EMAIL}           maxime.joannis6@gmail.com
 ${CONTACT_TELEPHONE}       0254129875
 ${CONTACT_MESSAGE}         Test automatisé - contacter l hote
+
+${USER_LOGIN_RESERVATION}       mjoan
+${USER_PASSWORD_RESERVATION}    rt
