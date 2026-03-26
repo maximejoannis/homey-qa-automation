@@ -100,3 +100,58 @@ Le Champ Ne Doit Pas Etre Vide
 Attendre Que Le Champ Soit Renseigne
     [Arguments]    ${locator}
     Wait Until Keyword Succeeds    5x    1s    Le Champ Ne Doit Pas Etre Vide    ${locator}
+
+Extraire Une Valeur Avec Regex
+    [Arguments]    ${texte}    ${pattern}
+    ${matches}=    Get Regexp Matches    ${texte}    ${pattern}    1
+    Should Not Be Empty    ${matches}
+    RETURN    ${matches}[0]
+
+Recuperer L Url Courante
+    ${url}=    Get Location
+    Should Not Be Empty    ${url}
+    RETURN    ${url}
+
+Recuperer L Id Reservation Depuis L Url
+    ${url}=    Recuperer L Url Courante
+    Log    [INFO] URL courante: ${url}    console=yes
+
+    ${status}    ${reservation_id}=    Run Keyword And Ignore Error
+    ...    Extraire Une Valeur Avec Regex    ${url}    .*/reservation/([0-9]+).*
+
+    IF    '${status}' == 'PASS'
+        Log    [INFO] ID réservation trouvé dans le path URL: ${reservation_id}    console=yes
+        RETURN    ${reservation_id}
+    END
+
+    ${status}    ${reservation_id}=    Run Keyword And Ignore Error
+    ...    Extraire Une Valeur Avec Regex    ${url}    .*booking_id=([0-9]+).*
+
+    IF    '${status}' == 'PASS'
+        Log    [INFO] ID réservation trouvé dans la query string: ${reservation_id}    console=yes
+        RETURN    ${reservation_id}
+    END
+
+    Fail    Aucun identifiant de réservation exploitable trouvé dans l URL : ${url}
+
+Verifier Que L Id Reservation Est Valide
+    [Arguments]    ${reservation_id}
+    Should Not Be Empty    ${reservation_id}
+    Should Match Regexp    ${reservation_id}    ^[0-9]+$
+
+Sauvegarder Le Contexte Runtime Reservation
+    [Arguments]    ${reservation_id}
+    Create Directory    results
+    ${json}=    Catenate
+    ...    {
+    ...    "reservation_id":"${reservation_id}"
+    ...    }
+    Create File    results/runtime_context.json    ${json}    encoding=UTF-8
+    Log    [INFO] runtime_context.json généré avec reservation_id=${reservation_id}    console=yes
+
+Capturer Et Sauvegarder L Id Reservation
+    ${reservation_id}=    Recuperer L Id Reservation Depuis L Url
+    Verifier Que L Id Reservation Est Valide    ${reservation_id}
+    Set Suite Variable    ${RESERVATION_ID}    ${reservation_id}
+    Sauvegarder Le Contexte Runtime Reservation    ${reservation_id}
+    Log    [INFO] RESERVATION_ID=${RESERVATION_ID}    console=yes
