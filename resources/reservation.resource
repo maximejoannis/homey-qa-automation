@@ -90,10 +90,6 @@ Se Connecter En Tant Qu Utilisateur Reservation
     Input Text    name=password    ${USER_PASSWORD_RESERVATION}
     Cliquer Sur Element De Facon Robuste    ${BTN_LOGIN}
 
-Finaliser Le Parcours Apres Demande De Reservation
-    Wait Until Page Contains Element    css=.block-body-sidebar .payment-list-price-detail    ${TIMEOUT_LONG}
-    Cliquer Sur Element De Facon Robuste    css=.block-body-sidebar .payment-list-price-detail
-
 Selectionner Une Date D Arrivee Et Une Date De Depart Connecte
     Wait Until Element Is Visible    name=arrive    ${TIMEOUT_UI}
     Cliquer Sur Element De Facon Robuste    name=arrive
