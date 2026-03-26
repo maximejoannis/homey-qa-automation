@@ -81,3 +81,11 @@ Cliquer Sur Demande De Reservation
     IF    not ${clicked}
         Cliquer Sur Element Via Javascript    ${BTN_DEMANDE_RESERVATION}
     END
+
+Se Connecter En Tant Qu Utilisateur Reservation
+    Wait Until Page Contains Element    xpath=//a[contains(text(),'Se connecter')]    ${TIMEOUT_UI}
+    Cliquer Sur Element De Facon Robuste    xpath=//a[contains(text(),'Se connecter')]
+    Wait Until Page Contains Element    name=username    ${TIMEOUT_UI}
+    Input Text    name=username    ${USER_LOGIN_RESERVATION}
+    Input Text    name=password    ${USER_PASSWORD_RESERVATION}
+    Cliquer Sur Element De Facon Robuste    ${BTN_LOGIN}
