@@ -345,3 +345,25 @@ Ce projet démontre :
 **Maxime Joannis**
 
 QA Automation Engineer en progression
+
+## 18. Reporting avancé
+
+Le projet produit plusieurs niveaux de reporting :
+
+### Reporting d’exécution
+- `report.html`
+- `log.html`
+- `output.xml`
+
+### Reporting synthétique
+- `summary.md`
+
+### Analyse intelligente
+- `failure_analysis.json`
+- `test_priorities.json`
+- `notifications.json`
+
+### Finalité
+- comprendre rapidement l’état de la campagne
+- identifier les causes probables d’échec
+- cibler les tests prioritaires
