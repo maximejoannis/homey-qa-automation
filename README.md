@@ -108,6 +108,36 @@ homey-qa-automation/
 * sélection des extras
 * validation du comportement utilisateur non connecté
 
+## ⚠️ Limites actuelles – US08 (Traitement de réservation)
+
+Le cas de test **US08 – Traiter une demande de réservation** est actuellement **partiellement automatisé mais exclu du run standard (quarantine)**.
+
+### 📌 Constat
+Le parcours utilisateur est exécutable de bout en bout (connexion → sélection → demande de réservation), mais :
+
+- l’application ne redirige pas vers une page dédiée,
+- aucun identifiant de réservation n’est exposé,
+- aucun message de confirmation stable n’est affiché,
+- l’utilisateur est redirigé vers la page d’accueil sans signal métier exploitable.
+
+### ⚠️ Impact QA
+Cela rend impossible la mise en place d’un **oracle fiable en boîte noire**, ce qui empêche une validation automatisée robuste.
+
+### ✅ Solutions possibles
+Pour rendre ce cas testable automatiquement, il faudrait :
+
+- un point d’observation métier côté UI (confirmation visuelle),
+- une page “Mes réservations” exploitable,
+- un message de confirmation stable,
+- ou une instrumentation spécifique pour les tests.
+
+### 🧠 Décision QA
+Le test est :
+- exécuté (parcours validé),
+- mais **exclu de la pipeline standard** afin de garantir la stabilité globale des tests.
+
+Cette décision permet de maintenir une pipeline fiable tout en documentant clairement la limite actuelle.
+
 ### Contact Hôte
 
 * ouverture de la modal
@@ -115,7 +145,7 @@ homey-qa-automation/
 * saisie des données
 * fermeture de la modal
 * soumission du formulaire
-
+  
 ---
 
 ## 6. Typologie des tests
