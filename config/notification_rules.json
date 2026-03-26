@@ -1,0 +1,42 @@
+{
+  "locator_not_found": {
+    "target": "dev_front",
+    "priority": "high",
+    "message": "Un locator semble cassé ou l'UI a changé. Vérifier le DOM et les sélecteurs."
+  },
+  "timeout": {
+    "target": "qa",
+    "priority": "medium",
+    "message": "Le test a expiré. Vérifier les attentes explicites, le chargement de page et la stabilité."
+  },
+  "flaky_ui": {
+    "target": "qa",
+    "priority": "medium",
+    "message": "Le test semble instable. Analyser le synchronisme et renforcer l'interaction."
+  },
+  "interaction_issue": {
+    "target": "dev_front",
+    "priority": "medium",
+    "message": "Un problème d'interaction UI est probable. Vérifier visibilité, overlay et comportement du composant."
+  },
+  "application_error": {
+    "target": "dev_back",
+    "priority": "high",
+    "message": "Un comportement applicatif anormal est détecté. Vérifier les logs serveur et le traitement backend."
+  },
+  "test_script_error": {
+    "target": "qa",
+    "priority": "high",
+    "message": "Le script de test semble en cause. Vérifier variables, syntaxe Robot et ressources importées."
+  },
+  "environment_error": {
+    "target": "devops",
+    "priority": "high",
+    "message": "L'environnement d'exécution semble défaillant. Vérifier Selenium, réseau et disponibilité applicative."
+  },
+  "unknown": {
+    "target": "qa",
+    "priority": "medium",
+    "message": "Cause inconnue. Analyser le log détaillé, les captures et le contexte d'exécution."
+  }
+}
