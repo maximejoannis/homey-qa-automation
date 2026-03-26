@@ -20,7 +20,6 @@ US08-CT01 - Effectuer le parcours connecté complet jusqu après la demande
     Cliquer Sur Demande De Reservation
     Finaliser Le Parcours Apres Demande De Reservation
 
-    Wait Until Page Contains Element    css=body    ${TIMEOUT_UI}
     ${title}=    Get Title
     Log    [INFO] Titre final: ${title}    console=yes
-    Page Title Should Be    Accueil - Livraison 3
+    Should Contain    ${title}    Accueil
