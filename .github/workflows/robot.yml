@@ -1,4 +1,4 @@
-name: Robot Framework Tests
+name: Homey QA Automation
 
 on:
   push:
@@ -9,6 +9,7 @@ on:
 
 jobs:
   robot-tests:
+    name: Run Robot Framework suite
     runs-on: ubuntu-latest
     timeout-minutes: 30
 
@@ -28,6 +29,7 @@ jobs:
     env:
       REMOTE_URL: http://127.0.0.1:4444/wd/hub
       ROBOT_OUTPUTDIR: results
+      PYTHONUNBUFFERED: 1
 
     steps:
       - name: Checkout repository
@@ -47,6 +49,14 @@ jobs:
           python --version
           pip --version
           python -m robot --version || true
+
+      - name: Prepare results folders
+        shell: bash
+        run: |
+          mkdir -p results
+          mkdir -p docs
+          mkdir -p tools
+          mkdir -p config
 
       - name: Wait for Selenium service
         shell: bash
@@ -97,7 +107,7 @@ jobs:
           if [ -f "${ROBOT_OUTPUTDIR}/output.xml" ]; then
             rebot \
               --outputdir "${ROBOT_OUTPUTDIR}" \
-              --name "Homey QA Automation" \
+              --name "Homey QA Automation - Regression Suite" \
               --log log.html \
               --report report.html \
               "${ROBOT_OUTPUTDIR}/output.xml"
@@ -105,13 +115,140 @@ jobs:
             echo "No output.xml found, skipping rebot generation."
           fi
 
+      - name: Generate markdown test summary
+        if: always()
+        shell: bash
+        run: |
+          if [ -f "tools/generate_test_summary.py" ]; then
+            python tools/generate_test_summary.py
+          else
+            echo "# Résumé des tests" > results/summary.md
+            echo "" >> results/summary.md
+            echo "Le script tools/generate_test_summary.py est absent." >> results/summary.md
+          fi
+
+      - name: Analyze failures with AI-ready rules
+        if: always()
+        shell: bash
+        run: |
+          if [ -f "tools/analyze_failures.py" ]; then
+            python tools/analyze_failures.py
+          else
+            echo '{"warning":"tools/analyze_failures.py missing"}' > results/failure_analysis.json
+          fi
+
+      - name: Prioritize tests intelligently
+        if: always()
+        shell: bash
+        run: |
+          if [ -f "tools/prioritize_tests.py" ]; then
+            python tools/prioritize_tests.py
+          else
+            echo '{"warning":"tools/prioritize_tests.py missing"}' > results/test_priorities.json
+          fi
+
+      - name: Generate targeted notifications
+        if: always()
+        shell: bash
+        run: |
+          if [ -f "tools/notify_targets.py" ]; then
+            python tools/notify_targets.py
+          else
+            echo '{"warning":"tools/notify_targets.py missing"}' > results/notifications.json
+          fi
+
+      - name: Build campaign report
+        if: always()
+        shell: bash
+        run: |
+          REPORT_FILE="results/campaign_report.md"
+
+          echo "# Rapport de campagne - Homey QA Automation" > "$REPORT_FILE"
+          echo "" >> "$REPORT_FILE"
+          echo "## 1. Informations générales" >> "$REPORT_FILE"
+          echo "" >> "$REPORT_FILE"
+          echo "- Workflow : **${GITHUB_WORKFLOW}**" >> "$REPORT_FILE"
+          echo "- Job : **${GITHUB_JOB}**" >> "$REPORT_FILE"
+          echo "- Branche / Ref : **${GITHUB_REF_NAME}**" >> "$REPORT_FILE"
+          echo "- Commit : **${GITHUB_SHA}**" >> "$REPORT_FILE"
+          echo "- Runner : **${RUNNER_OS}**" >> "$REPORT_FILE"
+          echo "" >> "$REPORT_FILE"
+
+          if [ -f "results/summary.md" ]; then
+            echo "## 2. Résumé global" >> "$REPORT_FILE"
+            echo "" >> "$REPORT_FILE"
+            cat results/summary.md >> "$REPORT_FILE"
+            echo "" >> "$REPORT_FILE"
+          fi
+
+          if [ -f "results/failure_analysis.json" ]; then
+            echo "## 3. Analyse automatique des échecs" >> "$REPORT_FILE"
+            echo "" >> "$REPORT_FILE"
+            echo '```json' >> "$REPORT_FILE"
+            cat results/failure_analysis.json >> "$REPORT_FILE"
+            echo '```' >> "$REPORT_FILE"
+            echo "" >> "$REPORT_FILE"
+          fi
+
+          if [ -f "results/test_priorities.json" ]; then
+            echo "## 4. Priorisation intelligente des tests" >> "$REPORT_FILE"
+            echo "" >> "$REPORT_FILE"
+            echo '```json' >> "$REPORT_FILE"
+            cat results/test_priorities.json >> "$REPORT_FILE"
+            echo '```' >> "$REPORT_FILE"
+            echo "" >> "$REPORT_FILE"
+          fi
+
+          if [ -f "results/notifications.json" ]; then
+            echo "## 5. Notifications ciblées" >> "$REPORT_FILE"
+            echo "" >> "$REPORT_FILE"
+            echo '```json' >> "$REPORT_FILE"
+            cat results/notifications.json >> "$REPORT_FILE"
+            echo '```' >> "$REPORT_FILE"
+            echo "" >> "$REPORT_FILE"
+          fi
+
       - name: Publish results artifact
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: robot-results
-          path: results
+          path: |
+            results
           if-no-files-found: warn
+
+      - name: Add execution summary to GitHub Actions
+        if: always()
+        shell: bash
+        run: |
+          {
+            echo "# Homey QA Automation"
+            echo ""
+            echo "- Branche : \`${GITHUB_REF_NAME}\`"
+            echo "- Commit : \`${GITHUB_SHA}\`"
+            echo "- Remote Selenium : \`${REMOTE_URL}\`"
+            echo ""
+
+            if [ -f "results/summary.md" ]; then
+              cat results/summary.md
+              echo ""
+            fi
+
+            if [ -f "results/campaign_report.md" ]; then
+              echo "## Rapport détaillé"
+              echo ""
+              echo "Le fichier \`results/campaign_report.md\` est disponible dans les artefacts."
+              echo ""
+            fi
+
+            if [ -f "results/failure_analysis.json" ]; then
+              echo "## Analyse IA-ready"
+              echo ""
+              echo "- \`failure_analysis.json\` généré"
+              echo "- \`test_priorities.json\` généré"
+              echo "- \`notifications.json\` généré"
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"
 
       - name: Diagnose Selenium service
         if: always()
