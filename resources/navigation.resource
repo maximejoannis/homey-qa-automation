@@ -19,3 +19,8 @@ Aller Sur La Premiere Annonce Depuis La Home
     Wait Until Page Contains Element    ${PREMIERE_ANNONCE_TRIGGER}    ${TIMEOUT_UI}
     Scroll Element Into View    ${PREMIERE_ANNONCE_TRIGGER}
     Wait Until Keyword Succeeds    3x    2s    Cliquer Sur Element De Facon Robuste    ${PREMIERE_ANNONCE_TRIGGER}
+
+Retourner A L Accueil Apres Connexion
+    Wait Until Page Contains Element    linkText=Accueil    ${TIMEOUT_UI}
+    Cliquer Sur Element De Facon Robuste    linkText=Accueil
+    Attendre Le Chargement De La Page
