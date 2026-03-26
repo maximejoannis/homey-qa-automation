@@ -10,6 +10,7 @@ ${SELENIUM_IMPLICIT}           0s
 
 ${BTN_CHERCHER_HOME}           css=.search-button .btn-primary
 ${PREMIERE_ANNONCE_TRIGGER}    xpath=(//div[contains(@class,'infobox_trigger')]//*[contains(@class,'hover-effect')])[1]
+${BTN_LOGIN}                    css=.homey_login_button
 
 ${CHAMP_RESERVATION_ARRIVEE}   name=arrive
 ${CHAMP_RESERVATION_DEPART}    name=depart
