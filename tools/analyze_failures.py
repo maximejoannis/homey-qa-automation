@@ -1,4 +1,5 @@
 import json
+import re
 import xml.etree.ElementTree as ET
 from pathlib import Path
 
@@ -6,27 +7,33 @@ OUTPUT_XML = Path("results/output.xml")
 ANALYSIS_JSON = Path("results/failure_analysis.json")
 
 
+def normalize_volatile_data(message: str) -> str:
+    text = message
+    text = re.sub(r"\b\d{3,}\b", "<ID>", text)
+    text = re.sub(
+        r"\b[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}\b",
+        "<UUID>",
+        text,
+    )
+    text = re.sub(r"\b\d{8}_\d{6}\b", "<TIMESTAMP>", text)
+    return text
+
+
 def classify_failure(message: str) -> str:
-    text = message.lower()
+    text = normalize_volatile_data(message).lower()
 
     if "variable" in text and "not found" in text:
         return "test_script_error"
-
     if "element" in text and "not found" in text:
         return "locator_not_found"
-
     if "timeout" in text or "wait until" in text:
         return "timeout"
-
     if "stale element" in text:
         return "flaky_ui"
-
     if "click intercepted" in text or "not clickable" in text:
         return "interaction_issue"
-
     if "500" in text or "internal server error" in text:
         return "application_error"
-
     if "connection refused" in text or ("selenium" in text and "not ready" in text):
         return "environment_error"
 
@@ -69,6 +76,7 @@ def main() -> None:
 
         if status.attrib.get("status") == "FAIL":
             message = (status.text or "").strip()
+            normalized_message = normalize_volatile_data(message)
             failure_type = classify_failure(message)
 
             failed_tests.append(
@@ -76,6 +84,7 @@ def main() -> None:
                     "test_name": name,
                     "failure_type": failure_type,
                     "message": message,
+                    "normalized_message": normalized_message,
                     "recommendation": recommendation_for_failure(failure_type),
                 }
             )
