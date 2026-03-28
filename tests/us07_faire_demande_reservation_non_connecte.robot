@@ -17,7 +17,7 @@ US07-CT01 - Vérifier la présence du module de réservation sur une annonce
     Le Module De Reservation Doit Etre Visible
 
 US07-CT02 - Sélectionner une date d'arrivée et une date de départ
-    [Tags]    regression    us07
+    [Tags]    regression    us07    quarantine
     Aller Sur La Premiere Annonce Depuis La Home
     Selectionner Une Date D'Arrivee Et Une Date De Depart
     Le Champ Ne Doit Pas Etre Vide    ${CHAMP_RESERVATION_ARRIVEE}
@@ -55,7 +55,7 @@ US07-CT06 - Vérifier les attributs des champs de réservation
     Le Champ Doit Avoir La Valeur D Attribut    ${CHAMP_RESERVATION_VOYAGEURS}    placeholder    Voyageurs
 
 US07-CT07 - Ouvrir le calendrier depuis le champ arrivée
-    [Tags]    regression    us07
+    [Tags]    regression    ui    us07    quarantine
     Aller Sur La Premiere Annonce Depuis La Home
     Ouvrir Le Calendrier Depuis Le Champ Arrivee
     Page Should Contain Element    ${CALENDRIER_JOUR_DISPONIBLE}
