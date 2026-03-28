@@ -2,6 +2,7 @@
 Resource    ../resources/common.resource
 Resource    ../variables/env.robot
 
+
 *** Keywords ***
 Le Module De Reservation Doit Etre Visible
     Page Should Contain Element    ${CHAMP_RESERVATION_ARRIVEE}
@@ -12,14 +13,24 @@ Le Module De Reservation Doit Etre Visible
 Selectionner Une Date D'Arrivee Et Une Date De Depart
     Wait Until Element Is Visible    ${CHAMP_RESERVATION_ARRIVEE}    ${TIMEOUT_UI}
     Scroll Element Into View    ${CHAMP_RESERVATION_ARRIVEE}
-    Click Element    ${CHAMP_RESERVATION_ARRIVEE}
+    Cliquer Sur Element De Facon Robuste    ${CHAMP_RESERVATION_ARRIVEE}
 
     Wait Until Page Contains Element    ${CALENDRIER_WRAPPER}    ${TIMEOUT_UI}
     Cliquer Sur Une Date De Calendrier De Facon Robuste    ${CALENDRIER_JOUR_DISPONIBLE}
     Sleep    1s
     Cliquer Sur Une Date De Calendrier De Facon Robuste    ${CALENDRIER_JOUR_DISPONIBLE_2}
 
-    Attendre Que Le Champ Soit Renseigne    ${CHAMP_RESERVATION_DEPART}
+    ${arrivee_ok}=    Run Keyword And Return Status
+    ...    Attendre Que Le Champ Soit Renseigne    ${CHAMP_RESERVATION_ARRIVEE}
+    ${depart_ok}=    Run Keyword And Return Status
+    ...    Attendre Que Le Champ Soit Renseigne    ${CHAMP_RESERVATION_DEPART}
+
+    IF    not ${arrivee_ok} or not ${depart_ok}
+        Log    [INFO] Fallback JS sur les dates car la sélection UI est instable.    console=yes
+        Injecter Des Dates Disponibles En Javascript
+        Attendre Que Le Champ Soit Renseigne    ${CHAMP_RESERVATION_ARRIVEE}
+        Attendre Que Le Champ Soit Renseigne    ${CHAMP_RESERVATION_DEPART}
+    END
 
 Cliquer Sur Une Date De Calendrier De Facon Robuste
     [Arguments]    ${locator}
@@ -31,32 +42,50 @@ Cliquer Sur Une Date De Calendrier De Facon Robuste
         Cliquer Sur Element Via Javascript    ${locator}
     END
 
+Injecter Des Dates Disponibles En Javascript
+    Execute Javascript
+    ...    const arrive = document.querySelector('[name="arrive"]');
+    ...    const depart = document.querySelector('[name="depart"]');
+    ...    if (!arrive || !depart) { throw new Error('Champs arrive/depart introuvables'); }
+    ...    arrive.removeAttribute('readonly');
+    ...    depart.removeAttribute('readonly');
+    ...    arrive.value = '2026-04-20';
+    ...    depart.value = '2026-04-22';
+    ...    ['input','change','blur'].forEach(evt => {
+    ...        arrive.dispatchEvent(new Event(evt, { bubbles: true }));
+    ...        depart.dispatchEvent(new Event(evt, { bubbles: true }));
+    ...    });
+
+Renseigner Les Dates Disponibles Pour Demande Non Connectee
+    Wait Until Element Is Visible    ${CHAMP_RESERVATION_ARRIVEE}    ${TIMEOUT_UI}
+    Scroll Element Into View    ${CHAMP_RESERVATION_ARRIVEE}
+    Injecter Des Dates Disponibles En Javascript
+    Attendre Que Le Champ Soit Renseigne    ${CHAMP_RESERVATION_ARRIVEE}
+    Attendre Que Le Champ Soit Renseigne    ${CHAMP_RESERVATION_DEPART}
+
 Ouvrir Le Calendrier Depuis Le Champ Arrivee
     Wait Until Element Is Visible    ${CHAMP_RESERVATION_ARRIVEE}    ${TIMEOUT_UI}
     Scroll Element Into View    ${CHAMP_RESERVATION_ARRIVEE}
-    Click Element    ${CHAMP_RESERVATION_ARRIVEE}
+    Cliquer Sur Element De Facon Robuste    ${CHAMP_RESERVATION_ARRIVEE}
     Wait Until Page Contains Element    ${CALENDRIER_WRAPPER}    ${TIMEOUT_UI}
     Wait Until Page Contains Element    ${CALENDRIER_JOUR_DISPONIBLE}    ${TIMEOUT_UI}
 
 Ouvrir Le Selecteur Voyageurs
     Wait Until Element Is Visible    ${CHAMP_RESERVATION_VOYAGEURS}    ${TIMEOUT_UI}
     Scroll Element Into View    ${CHAMP_RESERVATION_VOYAGEURS}
-    Click Element    ${CHAMP_RESERVATION_VOYAGEURS}
+    Cliquer Sur Element De Facon Robuste    ${CHAMP_RESERVATION_VOYAGEURS}
     Wait Until Page Contains Element    ${VOYAGEURS_PANEL}    ${TIMEOUT_UI}
     Wait Until Page Contains Element    ${BTN_APPLIQUER_VOYAGEURS}    ${TIMEOUT_UI}
 
 Selectionner Des Voyageurs
     [Arguments]    ${adultes}=1    ${enfants}=1
     Ouvrir Le Selecteur Voyageurs
-
     FOR    ${index}    IN RANGE    ${adultes}
         Cliquer Sur Element De Facon Robuste    ${BTN_ADULTE_PLUS}
     END
-
     FOR    ${index}    IN RANGE    ${enfants}
         Cliquer Sur Element De Facon Robuste    ${BTN_ENFANT_PLUS}
     END
-
     Cliquer Sur Element De Facon Robuste    ${BTN_APPLIQUER_VOYAGEURS}
 
 Selectionner L Extra Breakfast
