@@ -17,9 +17,8 @@ US07-CT01 - Vérifier la présence du module de réservation sur une annonce
     Le Module De Reservation Doit Etre Visible
 
 # ⚠️ Test instable en CI (datepicker headless)
-# Raison : éléments calendrier non détectés de manière fiable
-# Action : placé en quarantine en attendant amélioration des locators / waits
-
+# Cause probable : aucun jour disponible détecté de façon fiable avec le locator courant
+# Action : test temporairement placé en quarantine pour préserver la stabilité pipeline
 US07-CT02 - Sélectionner une date d'arrivée et une date de départ
     [Tags]    regression    us07    quarantine
     Aller Sur La Premiere Annonce Depuis La Home
@@ -59,9 +58,8 @@ US07-CT06 - Vérifier les attributs des champs de réservation
     Le Champ Doit Avoir La Valeur D Attribut    ${CHAMP_RESERVATION_VOYAGEURS}    placeholder    Voyageurs
 
 # ⚠️ Test instable en CI (datepicker headless)
-# Raison : éléments calendrier non détectés de manière fiable
-# Action : placé en quarantine en attendant amélioration des locators / waits
-
+# Cause probable : rendu asynchrone du calendrier en environnement CI
+# Action : test temporairement placé en quarantine
 US07-CT07 - Ouvrir le calendrier depuis le champ arrivée
     [Tags]    regression    ui    us07    quarantine
     Aller Sur La Premiere Annonce Depuis La Home
