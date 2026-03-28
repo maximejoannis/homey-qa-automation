@@ -1,12 +1,14 @@
 *** Settings ***
-Documentation       US-07 - Faire une demande de réservation
+Documentation       US-07 - Faire une demande de réservation (non connecté)
 Resource            ../resources/common.resource
 Resource            ../resources/navigation.resource
 Resource            ../resources/reservation.resource
 Resource            ../resources/assertions.resource
 Resource            ../variables/data.robot
+
 Test Setup          Setup Test
 Test Teardown       Teardown Test
+
 
 *** Test Cases ***
 US07-CT01 - Vérifier la présence du module de réservation sur une annonce
@@ -36,7 +38,7 @@ US07-CT04 - Sélectionner l'extra Breakfast
 US07-CT05 - Vérifier le message de connexion lors d'une demande non connectée
     [Tags]    regression    us07    quarantine
     Aller Sur La Premiere Annonce Depuis La Home
-    Selectionner Une Date D'Arrivee Et Une Date De Depart
+    Renseigner Les Dates Disponibles Pour Demande Non Connectee
     Selectionner Des Voyageurs    ${NB_ADULTES_STANDARD}    ${NB_ENFANTS_STANDARD}
     Cliquer Sur Demande De Reservation
     Wait Until Page Contains    ${MSG_CONNEXION_POUR_RESERVATION}    ${TIMEOUT_UI}
