@@ -17,14 +17,14 @@ US07-CT01 - Vérifier la présence du module de réservation sur une annonce
     Le Module De Reservation Doit Etre Visible
 
 US07-CT02 - Sélectionner une date d'arrivée et une date de départ
-    [Tags]    regression    us07    quarantine
+    [Tags]    regression    us07
     Aller Sur La Premiere Annonce Depuis La Home
     Selectionner Une Date D'Arrivee Et Une Date De Depart
     Le Champ Ne Doit Pas Etre Vide    ${CHAMP_RESERVATION_ARRIVEE}
     Le Champ Ne Doit Pas Etre Vide    ${CHAMP_RESERVATION_DEPART}
 
 US07-CT03 - Sélectionner des voyageurs
-    [Tags]    smoke    regression    us07
+    [Tags]    regression    us07
     Aller Sur La Premiere Annonce Depuis La Home
     Selectionner Des Voyageurs    ${NB_ADULTES_STANDARD}    ${NB_ENFANTS_STANDARD}
     Le Champ Ne Doit Pas Etre Vide    ${CHAMP_RESERVATION_VOYAGEURS}
@@ -36,7 +36,7 @@ US07-CT04 - Sélectionner l'extra Breakfast
     Checkbox Should Be Selected    ${CHK_EXTRA_BREAKFAST}
 
 US07-CT05 - Vérifier le message de connexion lors d'une demande non connectée
-    [Tags]    regression    us07    quarantine
+    [Tags]    regression    us07
     Aller Sur La Premiere Annonce Depuis La Home
     Renseigner Les Dates Disponibles Pour Demande Non Connectee
     Selectionner Des Voyageurs    ${NB_ADULTES_STANDARD}    ${NB_ENFANTS_STANDARD}
@@ -55,7 +55,7 @@ US07-CT06 - Vérifier les attributs des champs de réservation
     Le Champ Doit Avoir La Valeur D Attribut    ${CHAMP_RESERVATION_VOYAGEURS}    placeholder    Voyageurs
 
 US07-CT07 - Ouvrir le calendrier depuis le champ arrivée
-    [Tags]    regression    ui    us07    quarantine
+    [Tags]    regression    us07
     Aller Sur La Premiere Annonce Depuis La Home
     Ouvrir Le Calendrier Depuis Le Champ Arrivee
     Page Should Contain Element    ${CALENDRIER_JOUR_DISPONIBLE}
