@@ -5,8 +5,10 @@ Resource            ../resources/navigation.resource
 Resource            ../resources/contact_hote.resource
 Resource            ../resources/assertions.resource
 Resource            ../variables/data.robot
+
 Test Setup          Setup Test
 Test Teardown       Teardown Test
+
 
 *** Test Cases ***
 CONTACT-CT01 - Ouvrir la modal contacter l'hôte
@@ -73,3 +75,30 @@ CONTACT-CT08 - Vérifier le titre de la modal
     Aller Sur La Premiere Annonce Depuis La Home
     Ouvrir La Modal Contacter L Hote
     Element Should Be Visible    ${TITRE_MODAL_CONTACT}
+
+CONTACT-CT09 - Vérifier que le formulaire est en méthode POST
+    [Tags]    regression    ui    contact_hote
+    Aller Sur La Premiere Annonce Depuis La Home
+    Ouvrir La Modal Contacter L Hote
+    Page Should Contain Element    ${FORM_CONTACTER_HOTE}
+    ${method}=    Get Element Attribute    ${FORM_CONTACTER_HOTE}    method
+    Should Be Equal As Strings    ${method.lower()}    post
+
+CONTACT-CT10 - Vérifier les attributs du bouton soumettre
+    [Tags]    regression    ui    contact_hote
+    Aller Sur La Premiere Annonce Depuis La Home
+    Ouvrir La Modal Contacter L Hote
+    Page Should Contain Element    ${BTN_CONTACT_SOUMETTRE}
+    Le Champ Doit Avoir La Valeur D Attribut    ${BTN_CONTACT_SOUMETTRE}    type    submit
+    ${class}=    Get Element Attribute    ${BTN_CONTACT_SOUMETTRE}    class
+    Should Contain    ${class}    contact_listing_host
+
+CONTACT-CT11 - Vérifier que les champs cachés ont une valeur
+    [Tags]    regression    ui    contact_hote
+    Aller Sur La Premiere Annonce Depuis La Home
+    Ouvrir La Modal Contacter L Hote
+    Le Champ Doit Avoir Un Attribut Non Vide    ${HIDDEN_TARGET_EMAIL}    value
+    Le Champ Doit Avoir Un Attribut Non Vide    ${HIDDEN_HOST_CONTACT_SECURITY}    value
+    Le Champ Doit Avoir Un Attribut Non Vide    ${HIDDEN_PERMALINK}    value
+    Le Champ Doit Avoir Un Attribut Non Vide    ${HIDDEN_LISTING_TITLE}    value
+    Le Champ Doit Avoir Un Attribut Non Vide    ${HIDDEN_ACTION}    value
