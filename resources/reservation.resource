@@ -1,6 +1,7 @@
 *** Settings ***
 Resource    ../resources/common.resource
 Resource    ../variables/env.robot
+Resource    ../variables/data.robot
 
 
 *** Keywords ***
@@ -10,37 +11,49 @@ Le Module De Reservation Doit Etre Visible
     Page Should Contain Element    ${CHAMP_RESERVATION_VOYAGEURS}
     Page Should Contain Element    ${BTN_DEMANDE_RESERVATION}
 
-Selectionner Une Date D'Arrivee Et Une Date De Depart
-    Wait Until Element Is Visible    ${CHAMP_RESERVATION_ARRIVEE}    ${TIMEOUT_UI}
+Aller Sur Une Annonce Pour Reservation Connecte
+    Wait Until Element Is Visible    ${BTN_CHERCHER_HOME}    ${TIMEOUT_UI}
+    Cliquer Sur Element De Facon Robuste    ${BTN_CHERCHER_HOME}
+    Execute Javascript    window.scrollTo(0,0)
+    Wait Until Element Is Visible    ${ANNONCE_RESERVATION_CONNECTE_TRIGGER}    ${TIMEOUT_LONG}
+    Cliquer Sur Element Via Javascript    ${ANNONCE_RESERVATION_CONNECTE_TRIGGER}
+    Wait Until Keyword Succeeds    ${TIMEOUT_LONG}    1s    Attendre Module Reservation Listing
+
+Attendre Module Reservation Listing
+    Execute Javascript    window.scrollTo(0, document.body.scrollHeight);
+    Sleep    300ms
+    Page Should Contain Element    ${CHAMP_RESERVATION_ARRIVEE}
+    Page Should Contain Element    ${CHAMP_RESERVATION_DEPART}
+    Scroll Element Into View    ${CHAMP_RESERVATION_ARRIVEE}
+
+Se Connecter En Tant Qu Utilisateur Reservation
+    Wait Until Page Contains Element    ${LIEN_SE_CONNECTER}    ${TIMEOUT_UI}
+    Cliquer Sur Element De Facon Robuste    ${LIEN_SE_CONNECTER}
+    Wait Until Page Contains Element    ${CHAMP_NOM_UTILISATEUR}    ${TIMEOUT_UI}
+    Input Text    ${CHAMP_NOM_UTILISATEUR}    ${USER_LOGIN_RESERVATION}
+    Input Text    ${CHAMP_MOT_DE_PASSE}    ${USER_PASSWORD_RESERVATION}
+    Cliquer Sur Element De Facon Robuste    ${BTN_LOGIN}
+    Wait Until Page Contains Element    ${LIEN_SE_DECONNECTER}    ${TIMEOUT_LONG}
+
+Selectionner Une Date D Arrivee Et Une Date De Depart Connecte
+    Wait Until Element Is Visible    ${CHAMP_RESERVATION_ARRIVEE}    ${TIMEOUT_LONG}
     Scroll Element Into View    ${CHAMP_RESERVATION_ARRIVEE}
     Cliquer Sur Element De Facon Robuste    ${CHAMP_RESERVATION_ARRIVEE}
 
-    Wait Until Page Contains Element    ${CALENDRIER_WRAPPER}    ${TIMEOUT_UI}
-    Cliquer Sur Une Date De Calendrier De Facon Robuste    ${CALENDRIER_JOUR_DISPONIBLE}
-    Sleep    1s
-    Cliquer Sur Une Date De Calendrier De Facon Robuste    ${CALENDRIER_JOUR_DISPONIBLE_2}
+    ${date1_visible}=    Run Keyword And Return Status
+    ...    Wait Until Page Contains Element    ${CALENDRIER_DATE_1_CONNECTE}    ${TIMEOUT_LONG}
 
-    ${arrivee_ok}=    Run Keyword And Return Status
-    ...    Attendre Que Le Champ Soit Renseigne    ${CHAMP_RESERVATION_ARRIVEE}
-    ${depart_ok}=    Run Keyword And Return Status
-    ...    Attendre Que Le Champ Soit Renseigne    ${CHAMP_RESERVATION_DEPART}
-
-    IF    not ${arrivee_ok} or not ${depart_ok}
-        Log    [INFO] Fallback JS sur les dates car la sélection UI est instable.    console=yes
+    IF    ${date1_visible}
+        Cliquer Sur Element De Facon Robuste    ${CALENDRIER_DATE_1_CONNECTE}
+        Wait Until Page Contains Element    ${CALENDRIER_DATE_2_CONNECTE}    ${TIMEOUT_LONG}
+        Cliquer Sur Element De Facon Robuste    ${CALENDRIER_DATE_2_CONNECTE}
+    ELSE
+        Log    [INFO] Dates connectées non détectées, fallback JS.    console=yes
         Injecter Des Dates Disponibles En Javascript
-        Attendre Que Le Champ Soit Renseigne    ${CHAMP_RESERVATION_ARRIVEE}
-        Attendre Que Le Champ Soit Renseigne    ${CHAMP_RESERVATION_DEPART}
     END
 
-Cliquer Sur Une Date De Calendrier De Facon Robuste
-    [Arguments]    ${locator}
-    Wait Until Page Contains Element    ${CALENDRIER_WRAPPER}    ${TIMEOUT_UI}
-    Wait Until Page Contains Element    ${locator}    ${TIMEOUT_UI}
-    Scroll Element Into View    ${locator}
-    ${clicked}=    Run Keyword And Return Status    Click Element    ${locator}
-    IF    not ${clicked}
-        Cliquer Sur Element Via Javascript    ${locator}
-    END
+    Attendre Que Le Champ Soit Renseigne    ${CHAMP_RESERVATION_ARRIVEE}
+    Attendre Que Le Champ Soit Renseigne    ${CHAMP_RESERVATION_DEPART}
 
 Injecter Des Dates Disponibles En Javascript
     Execute Javascript
@@ -56,84 +69,52 @@ Injecter Des Dates Disponibles En Javascript
     ...        depart.dispatchEvent(new Event(evt, { bubbles: true }));
     ...    });
 
-Renseigner Les Dates Disponibles Pour Demande Non Connectee
-    Wait Until Element Is Visible    ${CHAMP_RESERVATION_ARRIVEE}    ${TIMEOUT_UI}
-    Scroll Element Into View    ${CHAMP_RESERVATION_ARRIVEE}
-    Injecter Des Dates Disponibles En Javascript
-    Attendre Que Le Champ Soit Renseigne    ${CHAMP_RESERVATION_ARRIVEE}
-    Attendre Que Le Champ Soit Renseigne    ${CHAMP_RESERVATION_DEPART}
-
-Ouvrir Le Calendrier Depuis Le Champ Arrivee
-    Wait Until Element Is Visible    ${CHAMP_RESERVATION_ARRIVEE}    ${TIMEOUT_UI}
-    Scroll Element Into View    ${CHAMP_RESERVATION_ARRIVEE}
-    Cliquer Sur Element De Facon Robuste    ${CHAMP_RESERVATION_ARRIVEE}
-    Wait Until Page Contains Element    ${CALENDRIER_WRAPPER}    ${TIMEOUT_UI}
-    Wait Until Page Contains Element    ${CALENDRIER_JOUR_DISPONIBLE}    ${TIMEOUT_UI}
-
-Ouvrir Le Selecteur Voyageurs
+Selectionner Des Voyageurs Connecte
     Wait Until Element Is Visible    ${CHAMP_RESERVATION_VOYAGEURS}    ${TIMEOUT_UI}
     Scroll Element Into View    ${CHAMP_RESERVATION_VOYAGEURS}
     Cliquer Sur Element De Facon Robuste    ${CHAMP_RESERVATION_VOYAGEURS}
-    Wait Until Page Contains Element    ${VOYAGEURS_PANEL}    ${TIMEOUT_UI}
-    Wait Until Page Contains Element    ${BTN_APPLIQUER_VOYAGEURS}    ${TIMEOUT_UI}
-
-Selectionner Des Voyageurs
-    [Arguments]    ${adultes}=1    ${enfants}=1
-    Ouvrir Le Selecteur Voyageurs
-    FOR    ${index}    IN RANGE    ${adultes}
-        Cliquer Sur Element De Facon Robuste    ${BTN_ADULTE_PLUS}
-    END
-    FOR    ${index}    IN RANGE    ${enfants}
-        Cliquer Sur Element De Facon Robuste    ${BTN_ENFANT_PLUS}
-    END
-    Cliquer Sur Element De Facon Robuste    ${BTN_APPLIQUER_VOYAGEURS}
-
-Selectionner L Extra Breakfast
-    Wait Until Page Contains Element    ${LBL_EXTRA_BREAKFAST}    ${TIMEOUT_UI}
-    Scroll Element Into View    ${LBL_EXTRA_BREAKFAST}
-    Cliquer Sur Element De Facon Robuste    ${LBL_EXTRA_BREAKFAST}
-
-Selectionner L Extra Lunch
-    Wait Until Page Contains Element    ${LBL_EXTRA_LUNCH}    ${TIMEOUT_UI}
-    Scroll Element Into View    ${LBL_EXTRA_LUNCH}
-    Cliquer Sur Element De Facon Robuste    ${LBL_EXTRA_LUNCH}
-
-Selectionner L Extra Dinner
-    Wait Until Page Contains Element    ${LBL_EXTRA_DINNER}    ${TIMEOUT_UI}
-    Scroll Element Into View    ${LBL_EXTRA_DINNER}
-    Cliquer Sur Element De Facon Robuste    ${LBL_EXTRA_DINNER}
-
-Cliquer Sur Demande De Reservation
-    Scroll Element Into View    ${BTN_DEMANDE_RESERVATION}
-    Wait Until Element Is Visible    ${BTN_DEMANDE_RESERVATION}    ${TIMEOUT_UI}
-    ${clicked}=    Run Keyword And Return Status    Click Button    ${BTN_DEMANDE_RESERVATION}
-    IF    not ${clicked}
-        Cliquer Sur Element Via Javascript    ${BTN_DEMANDE_RESERVATION}
-    END
-
-Se Connecter En Tant Qu Utilisateur Reservation
-    Wait Until Page Contains Element    xpath=//a[contains(text(),'Se connecter')]    ${TIMEOUT_UI}
-    Cliquer Sur Element De Facon Robuste    xpath=//a[contains(text(),'Se connecter')]
-    Wait Until Page Contains Element    name=username    ${TIMEOUT_UI}
-    Input Text    name=username    ${USER_LOGIN_RESERVATION}
-    Input Text    name=password    ${USER_PASSWORD_RESERVATION}
-    Cliquer Sur Element De Facon Robuste    ${BTN_LOGIN}
-
-Selectionner Une Date D Arrivee Et Une Date De Depart Connecte
-    Wait Until Element Is Visible    name=arrive    ${TIMEOUT_UI}
-    Cliquer Sur Element De Facon Robuste    name=arrive
-    Wait Until Page Contains Element    ${CALENDRIER_DATE_1_CONNECTE}    ${TIMEOUT_LONG}
-    Cliquer Sur Element De Facon Robuste    ${CALENDRIER_DATE_1_CONNECTE}
-    Wait Until Page Contains Element    ${CALENDRIER_DATE_2_CONNECTE}    ${TIMEOUT_LONG}
-    Cliquer Sur Element De Facon Robuste    ${CALENDRIER_DATE_2_CONNECTE}
-
-Selectionner Des Voyageurs Connecte
-    Cliquer Sur Element De Facon Robuste    name=guests
+    Wait Until Element Is Visible    ${BTN_ADULTE_PLUS_CONNECTE}    ${TIMEOUT_LONG}
     Cliquer Sur Element De Facon Robuste    ${BTN_ADULTE_PLUS_CONNECTE}
     Cliquer Sur Element De Facon Robuste    ${BTN_ADULTE_PLUS_CONNECTE}
+    Wait Until Element Is Visible    ${BTN_ENFANT_PLUS_CONNECTE}    ${TIMEOUT_LONG}
     Cliquer Sur Element De Facon Robuste    ${BTN_ENFANT_PLUS_CONNECTE}
+    Wait Until Element Is Visible    ${BTN_APPLIQUER_VOYAGEURS_CONNECTE}    ${TIMEOUT_LONG}
     Cliquer Sur Element De Facon Robuste    ${BTN_APPLIQUER_VOYAGEURS_CONNECTE}
+    Attendre Que Le Champ Soit Renseigne    ${CHAMP_RESERVATION_VOYAGEURS}
 
-Finaliser Le Parcours Apres Demande De Reservation
-    Wait Until Page Contains Element    ${BTN_FINALISER_APRES_DEMANDE}    ${TIMEOUT_LONG}
-    Cliquer Sur Element De Facon Robuste    ${BTN_FINALISER_APRES_DEMANDE}
+Aller Au Tableau De Bord Dropdown
+    Ouvrir Le Menu Compte
+    Wait Until Element Is Visible    ${ACCOUNT_DASHBOARD_LINK_CSS}    ${TIMEOUT_LONG}
+    Cliquer Sur Element De Facon Robuste    ${ACCOUNT_DASHBOARD_LINK_CSS}
+
+Aller Aux Voyages Dropdown
+    Ouvrir Le Menu Compte
+    Wait Until Element Is Visible    ${ACCOUNT_VOYAGES_LINK_CSS}    ${TIMEOUT_LONG}
+    Cliquer Sur Element De Facon Robuste    ${ACCOUNT_VOYAGES_LINK_CSS}
+
+Se Deconnecter Dropdown
+    Ouvrir Le Menu Compte
+    Wait Until Element Is Visible    ${ACCOUNT_LOGOUT_LINK_CSS}    ${TIMEOUT_LONG}
+    Cliquer Sur Element De Facon Robuste    ${ACCOUNT_LOGOUT_LINK_CSS}
+
+Ouvrir Le Menu Compte
+    Wait Until Element Is Visible    ${ACCOUNT_LOGGEDIN_AREA}    ${TIMEOUT_LONG}
+    Scroll Element Into View    ${ACCOUNT_LOGGEDIN_AREA}
+    Cliquer Sur Element De Facon Robuste    ${ACCOUNT_LOGGEDIN_AREA}
+
+Ouvrir Le Detail De La Premiere Reservation Dashboard
+    Wait Until Element Is Visible    ${BTN_DETAILS_PREMIERE_RESERVATION_DASHBOARD}    ${TIMEOUT_LONG}
+    Cliquer Sur Element De Facon Robuste    ${BTN_DETAILS_PREMIERE_RESERVATION_DASHBOARD}
+
+Descendre En Bas De Page
+    Execute Javascript    window.scrollTo(0, document.body.scrollHeight);
+    Sleep    500ms
+
+Champ Doit Etre Renseigne
+    [Arguments]    ${locator}
+    ${value}=    Get Value    ${locator}
+    Should Not Be Empty    ${value}
+
+Attendre Que Le Champ Soit Renseigne
+    [Arguments]    ${locator}
+    Wait Until Keyword Succeeds    10x    500ms    Champ Doit Etre Renseigne    ${locator}
