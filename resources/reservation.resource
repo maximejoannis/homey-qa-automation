@@ -11,6 +11,98 @@ Le Module De Reservation Doit Etre Visible
     Page Should Contain Element    ${CHAMP_RESERVATION_VOYAGEURS}
     Page Should Contain Element    ${BTN_DEMANDE_RESERVATION}
 
+# =========================
+# Parcours NON CONNECTÉ
+# =========================
+
+Selectionner Une Date D'Arrivee Et Une Date De Depart
+    Ouvrir Le Calendrier Depuis Le Champ Arrivee
+
+    ${jour1_dispo}=    Run Keyword And Return Status
+    ...    Wait Until Page Contains Element    ${CALENDRIER_JOUR_DISPONIBLE}    ${TIMEOUT_LONG}
+
+    IF    ${jour1_dispo}
+        Cliquer Sur Une Date De Calendrier De Facon Robuste    ${CALENDRIER_JOUR_DISPONIBLE}
+        Wait Until Page Contains Element    ${CALENDRIER_JOUR_DISPONIBLE_2}    ${TIMEOUT_LONG}
+        Cliquer Sur Une Date De Calendrier De Facon Robuste    ${CALENDRIER_JOUR_DISPONIBLE_2}
+    ELSE
+        Log    [INFO] Aucun jour disponible détecté en UI, fallback JS.    console=yes
+        Injecter Des Dates Disponibles En Javascript
+    END
+
+    Attendre Que Le Champ Soit Renseigne    ${CHAMP_RESERVATION_ARRIVEE}
+    Attendre Que Le Champ Soit Renseigne    ${CHAMP_RESERVATION_DEPART}
+
+Renseigner Les Dates Disponibles Pour Demande Non Connectee
+    Wait Until Element Is Visible    ${CHAMP_RESERVATION_ARRIVEE}    ${TIMEOUT_LONG}
+    Scroll Element Into View    ${CHAMP_RESERVATION_ARRIVEE}
+    Injecter Des Dates Disponibles En Javascript
+    Attendre Que Le Champ Soit Renseigne    ${CHAMP_RESERVATION_ARRIVEE}
+    Attendre Que Le Champ Soit Renseigne    ${CHAMP_RESERVATION_DEPART}
+
+Ouvrir Le Calendrier Depuis Le Champ Arrivee
+    Wait Until Element Is Visible    ${CHAMP_RESERVATION_ARRIVEE}    ${TIMEOUT_LONG}
+    Scroll Element Into View    ${CHAMP_RESERVATION_ARRIVEE}
+    Wait Until Keyword Succeeds    3x    1s
+    ...    Cliquer Sur Element De Facon Robuste    ${CHAMP_RESERVATION_ARRIVEE}
+    Wait Until Keyword Succeeds    5x    1s
+    ...    Page Should Contain Element    ${CALENDRIER_WRAPPER}
+
+Ouvrir Le Selecteur Voyageurs
+    Wait Until Element Is Visible    ${CHAMP_RESERVATION_VOYAGEURS}    ${TIMEOUT_UI}
+    Scroll Element Into View    ${CHAMP_RESERVATION_VOYAGEURS}
+    Cliquer Sur Element De Facon Robuste    ${CHAMP_RESERVATION_VOYAGEURS}
+    Wait Until Page Contains Element    ${VOYAGEURS_PANEL}    ${TIMEOUT_UI}
+    Wait Until Page Contains Element    ${BTN_APPLIQUER_VOYAGEURS}    ${TIMEOUT_UI}
+
+Selectionner Des Voyageurs
+    [Arguments]    ${adultes}=1    ${enfants}=1
+    Ouvrir Le Selecteur Voyageurs
+    FOR    ${index}    IN RANGE    ${adultes}
+        Cliquer Sur Element De Facon Robuste    ${BTN_ADULTE_PLUS}
+    END
+    FOR    ${index}    IN RANGE    ${enfants}
+        Cliquer Sur Element De Facon Robuste    ${BTN_ENFANT_PLUS}
+    END
+    Cliquer Sur Element De Facon Robuste    ${BTN_APPLIQUER_VOYAGEURS}
+    Attendre Que Le Champ Soit Renseigne    ${CHAMP_RESERVATION_VOYAGEURS}
+
+Selectionner L Extra Breakfast
+    Wait Until Page Contains Element    ${LBL_EXTRA_BREAKFAST}    ${TIMEOUT_UI}
+    Scroll Element Into View    ${LBL_EXTRA_BREAKFAST}
+    Cliquer Sur Element De Facon Robuste    ${LBL_EXTRA_BREAKFAST}
+
+Selectionner L Extra Lunch
+    Wait Until Page Contains Element    ${LBL_EXTRA_LUNCH}    ${TIMEOUT_UI}
+    Scroll Element Into View    ${LBL_EXTRA_LUNCH}
+    Cliquer Sur Element De Facon Robuste    ${LBL_EXTRA_LUNCH}
+
+Selectionner L Extra Dinner
+    Wait Until Page Contains Element    ${LBL_EXTRA_DINNER}    ${TIMEOUT_UI}
+    Scroll Element Into View    ${LBL_EXTRA_DINNER}
+    Cliquer Sur Element De Facon Robuste    ${LBL_EXTRA_DINNER}
+
+Cliquer Sur Demande De Reservation
+    Scroll Element Into View    ${BTN_DEMANDE_RESERVATION}
+    Wait Until Element Is Visible    ${BTN_DEMANDE_RESERVATION}    ${TIMEOUT_UI}
+    ${clicked}=    Run Keyword And Return Status    Click Button    ${BTN_DEMANDE_RESERVATION}
+    IF    not ${clicked}
+        Cliquer Sur Element Via Javascript    ${BTN_DEMANDE_RESERVATION}
+    END
+
+# =========================
+# Parcours CONNECTÉ
+# =========================
+
+Se Connecter En Tant Qu Utilisateur Reservation
+    Wait Until Page Contains Element    ${LIEN_SE_CONNECTER}    ${TIMEOUT_UI}
+    Cliquer Sur Element De Facon Robuste    ${LIEN_SE_CONNECTER}
+    Wait Until Page Contains Element    ${CHAMP_NOM_UTILISATEUR}    ${TIMEOUT_UI}
+    Input Text    ${CHAMP_NOM_UTILISATEUR}    ${USER_LOGIN_RESERVATION}
+    Input Text    ${CHAMP_MOT_DE_PASSE}    ${USER_PASSWORD_RESERVATION}
+    Cliquer Sur Element De Facon Robuste    ${BTN_LOGIN}
+    Wait Until Page Contains Element    ${LIEN_SE_DECONNECTER}    ${TIMEOUT_LONG}
+
 Aller Sur Une Annonce Pour Reservation Connecte
     Wait Until Element Is Visible    ${BTN_CHERCHER_HOME}    ${TIMEOUT_UI}
     Cliquer Sur Element De Facon Robuste    ${BTN_CHERCHER_HOME}
@@ -25,15 +117,6 @@ Attendre Module Reservation Listing
     Page Should Contain Element    ${CHAMP_RESERVATION_ARRIVEE}
     Page Should Contain Element    ${CHAMP_RESERVATION_DEPART}
     Scroll Element Into View    ${CHAMP_RESERVATION_ARRIVEE}
-
-Se Connecter En Tant Qu Utilisateur Reservation
-    Wait Until Page Contains Element    ${LIEN_SE_CONNECTER}    ${TIMEOUT_UI}
-    Cliquer Sur Element De Facon Robuste    ${LIEN_SE_CONNECTER}
-    Wait Until Page Contains Element    ${CHAMP_NOM_UTILISATEUR}    ${TIMEOUT_UI}
-    Input Text    ${CHAMP_NOM_UTILISATEUR}    ${USER_LOGIN_RESERVATION}
-    Input Text    ${CHAMP_MOT_DE_PASSE}    ${USER_PASSWORD_RESERVATION}
-    Cliquer Sur Element De Facon Robuste    ${BTN_LOGIN}
-    Wait Until Page Contains Element    ${LIEN_SE_DECONNECTER}    ${TIMEOUT_LONG}
 
 Selectionner Une Date D Arrivee Et Une Date De Depart Connecte
     Wait Until Element Is Visible    ${CHAMP_RESERVATION_ARRIVEE}    ${TIMEOUT_LONG}
@@ -54,20 +137,6 @@ Selectionner Une Date D Arrivee Et Une Date De Depart Connecte
 
     Attendre Que Le Champ Soit Renseigne    ${CHAMP_RESERVATION_ARRIVEE}
     Attendre Que Le Champ Soit Renseigne    ${CHAMP_RESERVATION_DEPART}
-
-Injecter Des Dates Disponibles En Javascript
-    Execute Javascript
-    ...    const arrive = document.querySelector('[name="arrive"]');
-    ...    const depart = document.querySelector('[name="depart"]');
-    ...    if (!arrive || !depart) { throw new Error('Champs arrive/depart introuvables'); }
-    ...    arrive.removeAttribute('readonly');
-    ...    depart.removeAttribute('readonly');
-    ...    arrive.value = '2026-04-20';
-    ...    depart.value = '2026-04-22';
-    ...    ['input','change','blur'].forEach(evt => {
-    ...        arrive.dispatchEvent(new Event(evt, { bubbles: true }));
-    ...        depart.dispatchEvent(new Event(evt, { bubbles: true }));
-    ...    });
 
 Selectionner Des Voyageurs Connecte
     Wait Until Element Is Visible    ${CHAMP_RESERVATION_VOYAGEURS}    ${TIMEOUT_UI}
@@ -109,6 +178,36 @@ Ouvrir Le Detail De La Premiere Reservation Dashboard
 Descendre En Bas De Page
     Execute Javascript    window.scrollTo(0, document.body.scrollHeight);
     Sleep    500ms
+
+# =========================
+# Utilitaires communs
+# =========================
+
+Cliquer Sur Une Date De Calendrier De Facon Robuste
+    [Arguments]    ${locator}
+    Wait Until Page Contains Element    ${CALENDRIER_WRAPPER}    ${TIMEOUT_LONG}
+    Wait Until Page Contains Element    ${locator}    ${TIMEOUT_LONG}
+    Scroll Element Into View    ${locator}
+    Wait Until Element Is Visible    ${locator}    ${TIMEOUT_LONG}
+    ${clicked}=    Run Keyword And Return Status    Click Element    ${locator}
+    IF    not ${clicked}
+        Sleep    500ms
+        Cliquer Sur Element Via Javascript    ${locator}
+    END
+
+Injecter Des Dates Disponibles En Javascript
+    Execute Javascript
+    ...    const arrive = document.querySelector('[name="arrive"]');
+    ...    const depart = document.querySelector('[name="depart"]');
+    ...    if (!arrive || !depart) { throw new Error('Champs arrive/depart introuvables'); }
+    ...    arrive.removeAttribute('readonly');
+    ...    depart.removeAttribute('readonly');
+    ...    arrive.value = '2026-04-20';
+    ...    depart.value = '2026-04-22';
+    ...    ['input','change','blur'].forEach(evt => {
+    ...        arrive.dispatchEvent(new Event(evt, { bubbles: true }));
+    ...        depart.dispatchEvent(new Event(evt, { bubbles: true }));
+    ...    });
 
 Champ Doit Etre Renseigne
     [Arguments]    ${locator}
