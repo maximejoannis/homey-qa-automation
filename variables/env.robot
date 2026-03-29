@@ -7,10 +7,21 @@ ${TIMEOUT_LONG}                         30s
 ${SELENIUM_TIMEOUT}                     15s
 ${SELENIUM_IMPLICIT}                    0s
 
-${BTN_CHERCHER_HOME}                    css=.search-button .btn-primary
+${BTN_CHERCHER_HOME}                    css=.search-button > .btn-primary:nth-child(1)
 ${PREMIERE_ANNONCE_TRIGGER}             xpath=(//div[contains(@class,'infobox_trigger')]//*[contains(@class,'hover-effect')])[1]
+${DEUXIEME_ANNONCE_TRIGGER}             css=.item-wrap:nth-child(2) .hover-effect
+${ANNONCE_RESERVATION_CONNECTE_TRIGGER}    css=.item-wrap:nth-child(7) .hover-effect
 
 ${BTN_LOGIN}                            css=.homey_login_button
+${LIEN_SE_CONNECTER}                    xpath=//a[contains(text(),'Se connecter')]
+${LIEN_SE_DECONNECTER}                  xpath=(//a[contains(text(),'Se déconnecter')])[3]
+${CHAMP_NOM_UTILISATEUR}                name=username
+${CHAMP_MOT_DE_PASSE}                   name=password
+${TITRE_PAGE_TABLEAU_DE_BORD}           Tableau de bord - Livraison 3
+
+${LIEN_ACCUEIL}                         linkText=Accueil
+${LIEN_ACCUEIL_XPATH}                   xpath=//a[contains(.,'Accueil')]
+${LIEN_ACCUEIL_CSS_MENU}                css=#menu-item-4630 > a
 
 ${CHAMP_RESERVATION_ARRIVEE}            name=arrive
 ${CHAMP_RESERVATION_DEPART}             name=depart
@@ -19,13 +30,21 @@ ${BTN_DEMANDE_RESERVATION}              id=request_for_reservation
 ${MSG_CONNEXION_POUR_RESERVATION}       Vous devez vous connecter
 
 ${CALENDRIER_WRAPPER}                   css=#single-booking-search-calendar
-${CALENDRIER_JOUR_DISPONIBLE}           xpath=(//div[@id='single-booking-search-calendar']//td[not(contains(@class,'disabled')) and not(contains(@class,'past')) and not(contains(@class,'week')) and not(contains(@class,'datepicker-switch')) and .//span[contains(@class,'day-number')]])[1]
-${CALENDRIER_JOUR_DISPONIBLE_2}         xpath=(//div[@id='single-booking-search-calendar']//td[not(contains(@class,'disabled')) and not(contains(@class,'past')) and not(contains(@class,'week')) and not(contains(@class,'datepicker-switch')) and .//span[contains(@class,'day-number')]])[2]
+${CALENDRIER_JOUR_DISPONIBLE}           xpath=(//div[@id='single-booking-search-calendar']//td[not(contains(@class,'disabled')) and not(contains(@class,'past')) and .//span[contains(@class,'day-number')]])[1]
+${CALENDRIER_JOUR_DISPONIBLE_2}         xpath=(//div[@id='single-booking-search-calendar']//td[not(contains(@class,'disabled')) and not(contains(@class,'past')) and .//span[contains(@class,'day-number')]])[2]
+
+${CALENDRIER_DATE_1_CONNECTE}           css=.block-body-sidebar > #single-listing-date-range > #single-booking-search-calendar > .single-listing-calendar-wrap:nth-child(1) .current-month:nth-child(24)
+${CALENDRIER_DATE_2_CONNECTE}           css=.block-body-sidebar > #single-listing-date-range > #single-booking-search-calendar > .single-listing-calendar-wrap:nth-child(2) .current-month:nth-child(29)
 
 ${VOYAGEURS_PANEL}                      xpath=(//div[contains(@class,'sidebar-booking-module-body')])[last()]
 ${BTN_ADULTE_PLUS}                      xpath=(//button[contains(@class,'adult_plus')] | //a[contains(@class,'adult_plus')] | //span[contains(@class,'adult_plus')] | //i[contains(@class,'adult_plus')])[1]
 ${BTN_ENFANT_PLUS}                      xpath=(//button[contains(@class,'child_plus')] | //a[contains(@class,'child_plus')] | //span[contains(@class,'child_plus')] | //i[contains(@class,'child_plus')])[1]
 ${BTN_APPLIQUER_VOYAGEURS}              xpath=(//button[contains(@class,'guest-apply-btn')] | //div[contains(@class,'guest-apply-btn')]//button | //div[contains(@class,'guest-apply-btn')]//*[contains(@class,'btn')])[1]
+
+${BTN_ADULTE_PLUS_CONNECTE}             css=.sidebar-booking-module-body:nth-child(2) .adult_plus > .fa
+${BTN_ENFANT_PLUS_CONNECTE}             css=.sidebar-booking-module-body:nth-child(2) .child_plus > .fa
+${BTN_APPLIQUER_VOYAGEURS_CONNECTE}     css=.sidebar-booking-module-body:nth-child(2) .guest-apply-btn > .btn
+${BTN_FINALISER_APRES_DEMANDE}          css=.block-body-sidebar .payment-list-price-detail
 
 ${CHK_EXTRA_BREAKFAST}                  css=#homey_remove_on_mobile input[name="extra_price[]"][data-name="Breakfast"]
 ${LBL_EXTRA_BREAKFAST}                  xpath=//div[@id='homey_remove_on_mobile']//label[contains(@class,'homey_extra_price')][.//span[contains(@class,'control-text') and normalize-space(.)='Breakfast']]
@@ -56,12 +75,9 @@ ${HIDDEN_PERMALINK}                     css=#modal-contact-host input[name="perm
 ${HIDDEN_LISTING_TITLE}                 css=#modal-contact-host input[name="listing_title"]
 ${HIDDEN_ACTION}                        css=#modal-contact-host input[name="action"]
 
-${DEUXIEME_ANNONCE_TRIGGER}             css=.item-wrap:nth-child(2) .hover-effect
+${BTN_DETAILS_PREMIERE_RESERVATION_DASHBOARD}    css=tr:nth-child(1) .btn
 
-${CALENDRIER_DATE_1_CONNECTE}           css=.sidebar-booking-module-body:nth-child(2) .single-listing-calendar-wrap:nth-child(1) .current-month:nth-child(20) > .day-number
-${CALENDRIER_DATE_2_CONNECTE}           css=.block-body-sidebar > #single-listing-date-range > #single-booking-search-calendar > .single-listing-calendar-wrap:nth-child(2) .current-month:nth-child(30) > .day-number
-
-${BTN_ADULTE_PLUS_CONNECTE}             css=.sidebar-booking-module-body:nth-child(2) .adult_plus > .fa
-${BTN_ENFANT_PLUS_CONNECTE}             css=.sidebar-booking-module-body:nth-child(2) .child_plus
-${BTN_APPLIQUER_VOYAGEURS_CONNECTE}     css=.sidebar-booking-module-body:nth-child(2) .guest-apply-btn > .btn
-${BTN_FINALISER_APRES_DEMANDE}          css=.block-body-sidebar .payment-list-price-detail
+${ACCOUNT_LOGGEDIN_AREA}                css=.account-loggedin
+${ACCOUNT_DASHBOARD_LINK_CSS}           css=.account-dropdown li:nth-child(1) > a
+${ACCOUNT_VOYAGES_LINK_CSS}             css=.account-dropdown li:nth-child(3) > a
+${ACCOUNT_LOGOUT_LINK_CSS}              css=.account-dropdown li:nth-child(8) > a
