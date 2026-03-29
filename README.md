@@ -4,9 +4,9 @@ Projet d’automatisation des tests fonctionnels de l’application **Homey** av
 
 Ce projet démontre une approche professionnelle de la QA Automation basée sur trois piliers :
 
-- **Learn** → Comprendre, tester, analyser
-- **Build** → Structurer, factoriser, maintenir
-- **Deploy** → Industrialiser, reporter, analyser intelligemment
+* **Learn** → Comprendre, tester, analyser
+* **Build** → Structurer, factoriser, maintenir
+* **Deploy** → Industrialiser, reporter, analyser intelligemment
 
 ---
 
@@ -14,27 +14,28 @@ Ce projet démontre une approche professionnelle de la QA Automation basée sur 
 
 Ce projet couvre l’automatisation de parcours métier clés :
 
-- **US-07 : Faire une demande de réservation**
-- **US-08 : Traiter une demande de réservation**
-- Parcours complémentaire : **Contacter l’hôte**
+* **US-07 : Faire une demande de réservation**
+* **US-08 : Traiter une demande de réservation**
+* Parcours complémentaire : **Contacter l’hôte**
 
 Objectifs :
-- automatiser les parcours critiques
-- stabiliser les tests
-- industrialiser l’exécution
-- produire un reporting exploitable
-- intégrer une analyse intelligente des résultats
+
+* automatiser les parcours critiques
+* stabiliser les tests
+* industrialiser l’exécution
+* produire un reporting exploitable
+* intégrer une analyse intelligente des résultats
 
 ---
 
 ## 2. Stack technique
 
-- Robot Framework
-- SeleniumLibrary
-- Python 3.11
-- GitHub Actions
-- Selenium Standalone Chrome
-- VS Code
+* Robot Framework
+* SeleniumLibrary
+* Python 3.11
+* GitHub Actions
+* Selenium Standalone Chrome
+* VS Code
 
 ---
 
@@ -46,8 +47,11 @@ homey-qa-automation/
 │   └── workflows/
 │       └── robot.yml
 ├── tests/
-│   ├── us07_faire_demande_reservation.robot
-│   └── contact_hote.robot
+│   ├── smoke.robot
+│   ├── us07_faire_demande_reservation_connecte.robot
+│   ├── us07_faire_demande_reservation_non_connecte.robot
+│   ├── us08_traiter_demande_reservation.robot
+│   └── us09_contact_hote.robot
 ├── resources/
 │   ├── common.resource
 │   ├── navigation.resource
@@ -68,7 +72,7 @@ homey-qa-automation/
 ├── results/
 ├── requirements.txt
 └── README.md
-````
+```
 
 ---
 
@@ -113,28 +117,33 @@ homey-qa-automation/
 Le cas de test **US08 – Traiter une demande de réservation** est actuellement **partiellement automatisé mais exclu du run standard (quarantine)**.
 
 ### 📌 Constat
+
 Le parcours utilisateur est exécutable de bout en bout (connexion → sélection → demande de réservation), mais :
 
-- l’application ne redirige pas vers une page dédiée,
-- aucun identifiant de réservation n’est exposé,
-- aucun message de confirmation stable n’est affiché,
-- l’utilisateur est redirigé vers la page d’accueil sans signal métier exploitable.
+* l’application ne redirige pas vers une page dédiée,
+* aucun identifiant de réservation n’est exposé,
+* aucun message de confirmation stable n’est affiché,
+* l’utilisateur est redirigé vers la page d’accueil sans signal métier exploitable.
 
 ### ⚠️ Impact QA
-Cela rend impossible la mise en place d’un **oracle fiable en boîte noire**, ce qui empêche une validation automatisée robuste.
+
+Cela rend impossible la mise en place d’une validation automatique fiable basée uniquement sur ce qui est visible à l’écran, ce qui empêche une validation automatisée robuste.
 
 ### ✅ Solutions possibles
+
 Pour rendre ce cas testable automatiquement, il faudrait :
 
-- un point d’observation métier côté UI (confirmation visuelle),
-- une page “Mes réservations” exploitable,
-- un message de confirmation stable,
-- ou une instrumentation spécifique pour les tests.
+* un point d’observation métier côté UI (confirmation visuelle),
+* une page “Mes réservations” exploitable,
+* un message de confirmation stable,
+* ou une instrumentation spécifique pour les tests.
 
 ### 🧠 Décision QA
+
 Le test est :
-- exécuté (parcours validé),
-- mais **exclu de la pipeline standard** afin de garantir la stabilité globale des tests.
+
+* exécuté (parcours validé),
+* mais **exclu de la pipeline standard** afin de garantir la stabilité globale des tests.
 
 Cette décision permet de maintenir une pipeline fiable tout en documentant clairement la limite actuelle.
 
@@ -145,7 +154,7 @@ Cette décision permet de maintenir une pipeline fiable tout en documentant clai
 * saisie des données
 * fermeture de la modal
 * soumission du formulaire
-  
+
 ---
 
 ## 6. Typologie des tests
@@ -162,7 +171,7 @@ Cette décision permet de maintenir une pipeline fiable tout en documentant clai
 ## 7. Installation
 
 ```bash
-git clone https://github.com/TON-USERNAME/homey-qa-automation.git
+git clone https://github.com/maximejoannis/homey-qa-automation.git
 cd homey-qa-automation
 
 python -m venv .venv
@@ -201,8 +210,8 @@ robot tests
 ### Par suite
 
 ```bash
-robot tests/us07_faire_demande_reservation.robot
-robot tests/contact_hote.robot
+robot tests/us07_faire_demande_reservation_non_connecte.robot
+robot tests/us09_contact_hote.robot
 ```
 
 ### Smoke
@@ -381,19 +390,23 @@ QA Automation Engineer en progression
 Le projet produit plusieurs niveaux de reporting :
 
 ### Reporting d’exécution
-- `report.html`
-- `log.html`
-- `output.xml`
+
+* `report.html`
+* `log.html`
+* `output.xml`
 
 ### Reporting synthétique
-- `summary.md`
+
+* `summary.md`
 
 ### Analyse intelligente
-- `failure_analysis.json`
-- `test_priorities.json`
-- `notifications.json`
+
+* `failure_analysis.json`
+* `test_priorities.json`
+* `notifications.json`
 
 ### Finalité
-- comprendre rapidement l’état de la campagne
-- identifier les causes probables d’échec
-- cibler les tests prioritaires
+
+* comprendre rapidement l’état de la campagne
+* identifier les causes probables d’échec
+* cibler les tests prioritaires
