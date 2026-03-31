@@ -2,6 +2,19 @@
 
 Projet d’automatisation des tests fonctionnels de l’application **Homey** avec **Robot Framework**, **SeleniumLibrary** et **GitHub Actions**.
 
+🌐 Application testée
+
+Application web :
+👉 http://livraison3.testacademy.fr/
+
+Plateforme de réservation de logements permettant :
+
+recherche d’annonces
+consultation de biens
+contact avec l’hôte
+demande de réservation
+gestion des réservations côté utilisateur et hôte
+
 Ce projet démontre une approche professionnelle de la QA Automation basée sur trois piliers :
 
 * **Learn** → Comprendre, tester, analyser
