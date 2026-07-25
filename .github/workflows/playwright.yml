@@ -1,24 +1,37 @@
-name: Playwright Tests
+name: Playwright Tests and Allure Report
 
 on:
   push:
-    branches: [main]
+    branches:
+      - main
+
   pull_request:
-    branches: [main]
+    branches:
+      - main
+
   workflow_dispatch:
 
 permissions:
   contents: read
 
 concurrency:
-  group: pages-${{ github.ref }}
+  group: playwright-pages-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
   test:
-    name: Playwright tests
-    timeout-minutes: 60
+    name: Run Playwright tests
     runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    env:
+      BASE_URL: ${{ secrets.BASE_URL }}
+      TRAVELER_USERNAME: ${{ secrets.TRAVELER_USERNAME }}
+      TRAVELER_PASSWORD: ${{ secrets.TRAVELER_PASSWORD }}
+      HOST_USERNAME: ${{ secrets.HOST_USERNAME }}
+      HOST_PASSWORD: ${{ secrets.HOST_PASSWORD }}
+      TEST_LISTING_INDEX: ${{ vars.TEST_LISTING_INDEX || '0' }}
+      CI: true
 
     steps:
       - name: Checkout repository
@@ -30,65 +43,179 @@ jobs:
           node-version: lts/*
           cache: npm
 
-      - name: Install dependencies
+      - name: Validate test configuration
+        shell: bash
+        run: |
+          missing_secrets=0
+
+          if [ -z "$BASE_URL" ]; then
+            echo "::error::Le secret BASE_URL est absent ou vide."
+            missing_secrets=1
+          fi
+
+          if [ -z "$TRAVELER_USERNAME" ]; then
+            echo "::error::Le secret TRAVELER_USERNAME est absent ou vide."
+            missing_secrets=1
+          fi
+
+          if [ -z "$TRAVELER_PASSWORD" ]; then
+            echo "::error::Le secret TRAVELER_PASSWORD est absent ou vide."
+            missing_secrets=1
+          fi
+
+          if [ -z "$HOST_USERNAME" ]; then
+            echo "::error::Le secret HOST_USERNAME est absent ou vide."
+            missing_secrets=1
+          fi
+
+          if [ -z "$HOST_PASSWORD" ]; then
+            echo "::error::Le secret HOST_PASSWORD est absent ou vide."
+            missing_secrets=1
+          fi
+
+          if [ "$missing_secrets" -ne 0 ]; then
+            exit 1
+          fi
+
+          case "$BASE_URL" in
+            http://*|https://*)
+              echo "La configuration des secrets est valide."
+              ;;
+            *)
+              echo "::error::BASE_URL doit commencer par http:// ou https://."
+              exit 1
+              ;;
+          esac
+
+          if ! [[ "$TEST_LISTING_INDEX" =~ ^[0-9]+$ ]]; then
+            echo "::error::TEST_LISTING_INDEX doit être un nombre entier positif ou nul."
+            exit 1
+          fi
+
+          echo "TEST_LISTING_INDEX est configuré."
+          echo "Les valeurs sensibles ne seront pas affichées."
+
+      - name: Install npm dependencies
         run: npm ci
 
-      - name: Install Chromium
+      - name: Install Chromium and system dependencies
         run: npx playwright install --with-deps chromium
 
       - name: Run Playwright tests
+        id: playwright-tests
         run: npm run test:chromium
-        env:
-          BASE_URL: ${{ secrets.BASE_URL }}
-          TRAVELER_USERNAME: ${{ secrets.TRAVELER_USERNAME }}
-          TRAVELER_PASSWORD: ${{ secrets.TRAVELER_PASSWORD }}
-          HOST_USERNAME: ${{ secrets.HOST_USERNAME }}
-          HOST_PASSWORD: ${{ secrets.HOST_PASSWORD }}
-          TEST_LISTING_INDEX: ${{ vars.TEST_LISTING_INDEX || '0' }}
 
       - name: Generate Allure report
-        if: ${{ !cancelled() }}
-        run: npm run allure:generate
+        if: always()
+        shell: bash
+        run: |
+          if [ -d "allure-results" ] && [ -n "$(find allure-results -mindepth 1 -print -quit 2>/dev/null)" ]; then
+            npm run allure:generate
+          else
+            echo "::warning::Aucun résultat Allure n'a été produit."
 
-      - name: Upload Playwright report
-        if: ${{ !cancelled() }}
+            mkdir -p allure-report
+
+            cat > allure-report/index.html <<'EOF'
+          <!doctype html>
+          <html lang="fr">
+            <head>
+              <meta charset="utf-8">
+              <meta name="viewport" content="width=device-width, initial-scale=1">
+              <title>Rapport Allure indisponible</title>
+              <style>
+                body {
+                  max-width: 800px;
+                  margin: 80px auto;
+                  padding: 0 24px;
+                  font-family: Arial, sans-serif;
+                  line-height: 1.6;
+                }
+
+                h1 {
+                  color: #b42318;
+                }
+
+                code {
+                  padding: 2px 6px;
+                  background: #f2f4f7;
+                  border-radius: 4px;
+                }
+              </style>
+            </head>
+            <body>
+              <h1>Rapport Allure indisponible</h1>
+              <p>
+                Aucun résultat Allure n'a été généré pendant cette exécution.
+              </p>
+              <p>
+                Consultez les artefacts <code>playwright-report</code> et
+                <code>test-results</code> dans GitHub Actions pour analyser
+                l'échec.
+              </p>
+            </body>
+          </html>
+          EOF
+          fi
+
+      - name: Upload Playwright HTML report
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: playwright-report
           path: playwright-report/
+          if-no-files-found: warn
+          retention-days: 30
+
+      - name: Upload Playwright test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results
+          path: test-results/
+          if-no-files-found: warn
           retention-days: 30
 
       - name: Upload Allure raw results
-        if: ${{ !cancelled() }}
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: allure-results
           path: allure-results/
+          if-no-files-found: warn
           retention-days: 30
 
       - name: Upload Allure HTML report
-        if: ${{ !cancelled() }}
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: allure-report
           path: allure-report/
+          if-no-files-found: error
           retention-days: 30
 
       - name: Configure GitHub Pages
-        if: ${{ !cancelled() && github.event_name != 'pull_request' }}
+        if: always() && github.event_name != 'pull_request'
         uses: actions/configure-pages@v5
 
-      - name: Upload report for GitHub Pages
-        if: ${{ !cancelled() && github.event_name != 'pull_request' }}
+      - name: Upload Allure report for GitHub Pages
+        if: always() && github.event_name != 'pull_request'
         uses: actions/upload-pages-artifact@v4
         with:
           path: allure-report/
 
   deploy:
     name: Publish Allure report
-    if: ${{ always() && github.event_name != 'pull_request' && needs.test.result != 'cancelled' }}
-    needs: test
+    needs:
+      - test
+
+    if: >
+      always() &&
+      github.event_name != 'pull_request' &&
+      needs.test.result != 'cancelled'
+
     runs-on: ubuntu-latest
+    timeout-minutes: 10
 
     permissions:
       pages: write
