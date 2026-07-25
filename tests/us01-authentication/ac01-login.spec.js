@@ -1,9 +1,23 @@
 const { test } = require('../../src/fixtures/test');
-const { traveler, host, invalidUser } = require('../../src/data/users');
+const {
+  traveler,
+  host,
+  invalidUser,
+  invalidPassword,
+} = require('../../src/data/users');
 
 test.describe('US01 - Se connecter', () => {
   test(
-    'TC-US01-AC01-01 connexion Voyageur réussie @smoke @critical',
+    'TC-AUTH-001 ouverture de la popup et fonctions attendues @smoke',
+    async ({ homePage, loginModal }) => {
+      await homePage.goto();
+      await homePage.openLogin();
+      await loginModal.expectRequiredFunctions();
+    }
+  );
+
+  test(
+    'TC-AUTH-002 et TC-AUTH-003 connexion Voyageur et rubriques autorisées @smoke @critical',
     async ({ homePage, loginModal, dashboardPage }) => {
       test.skip(
         !traveler.username || !traveler.password,
@@ -12,45 +26,78 @@ test.describe('US01 - Se connecter', () => {
 
       await homePage.goto();
       await homePage.openLogin();
-
       await loginModal.login(traveler.username, traveler.password);
       await dashboardPage.expectTravelerDashboard();
     }
   );
 
   test(
-    'TC-US01-AC01-02 connexion Hôte réussie @critical',
+    'TC-AUTH-004 et TC-AUTH-005 connexion Hôte et rubriques autorisées @critical',
     async ({ homePage, loginModal, dashboardPage }) => {
       test.skip(
         !host.username || !host.password,
-        'Identifiants Hôte requis dans les variables HOST_USERNAME/HOST_PASSWORD.'
+        'Identifiants Hôte requis dans HOST_USERNAME et HOST_PASSWORD.'
       );
 
       await homePage.goto();
       await homePage.openLogin();
-
       await loginModal.login(host.username, host.password);
       await dashboardPage.expectHostDashboard();
     }
   );
 
   test(
-    'TC-US01-AC02-01 coordonnées invalides : erreur affichée et aucune connexion',
+    'TC-AUTH-006 identifiant inexistant : connexion refusée',
     async ({ homePage, loginModal }) => {
       await homePage.goto();
       await homePage.openLogin();
-
       await loginModal.login(invalidUser.username, invalidUser.password);
       await loginModal.expectInvalidCredentials();
     }
   );
 
   test(
-    'TC-US01-AC02-02 popup contient les fonctions attendues',
+    'TC-AUTH-007 mot de passe erroné : connexion refusée',
     async ({ homePage, loginModal }) => {
+      test.skip(
+        !traveler.username,
+        'Identifiant Voyageur requis dans TRAVELER_USERNAME.'
+      );
+
       await homePage.goto();
       await homePage.openLogin();
-      await loginModal.expectRequiredFunctions();
+      await loginModal.login(traveler.username, invalidPassword);
+      await loginModal.expectInvalidCredentials();
+    }
+  );
+
+  test(
+    'TC-AUTH-010 déconnexion Voyageur réussie @critical',
+    async ({ homePage, loginModal, dashboardPage }) => {
+      test.skip(
+        !traveler.username || !traveler.password,
+        'Identifiants Voyageur requis dans TRAVELER_USERNAME et TRAVELER_PASSWORD.'
+      );
+
+      await homePage.goto();
+      await homePage.openLogin();
+      await loginModal.login(traveler.username, traveler.password);
+      await dashboardPage.expectTravelerDashboard();
+      await dashboardPage.logout();
+    }
+  );
+
+  test.fixme(
+    'TC-AUTH-008 champs vides : validation et aucune authentification',
+    async () => {
+      // À activer après observation du type de validation, du message et de l'état du bouton.
+    }
+  );
+
+  test.fixme(
+    'TC-AUTH-009 se souvenir de moi : persistance conforme à la règle métier',
+    async () => {
+      // À activer après clarification de la durée et du mécanisme de persistance attendus.
     }
   );
 });
