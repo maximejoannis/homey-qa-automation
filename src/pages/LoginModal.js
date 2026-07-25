@@ -25,10 +25,9 @@ class LoginModal {
       name: /mot de passe.*oubli/i,
     });
 
-    this.feedback = this.modal.locator('p').filter({
-      hasText:
-        /invalid username or email|identifiant incorrect|connexion impossible|incorrect username or password/i,
-    });
+    this.feedback = this.modal.getByText(
+  /invalid username or email|identifiant incorrect|connexion impossible|incorrect username or password/i
+    );
 
     this.passwordRequiredFeedback = this.modal.getByText(
       /the password field is empty|le champ mot de passe est vide/i
