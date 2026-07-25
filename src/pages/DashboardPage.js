@@ -132,9 +132,17 @@ class DashboardPage {
     await this.expectLoaded();
 
     await expect(this.dashboardLink).toBeVisible();
+    await expect(this.profileLink).toBeVisible();
     await expect(this.tripsLink).toBeVisible();
+    await expect(this.walletLink).toBeVisible();
+    await expect(this.favoritesLink).toBeVisible();
+    await expect(this.invoicesLink).toBeVisible();
     await expect(this.messagesLink).toBeVisible();
     await expect(this.logoutLink).toBeVisible();
+
+    // Les fonctions réservées à l'Hôte ne doivent pas être proposées.
+    await expect(this.createListingLink).toBeHidden();
+    await expect(this.reservationsLink).toBeHidden();
   }
 
   /**
@@ -143,14 +151,19 @@ class DashboardPage {
   async expectHostDashboard() {
     await this.expectLoaded();
 
+    await expect(this.dashboardLink).toBeVisible();
+    await expect(this.profileLink).toBeVisible();
     await expect(this.listingsLink).toBeVisible();
-    await expect(
-      this.createListingLink
-    ).toBeVisible();
-    await expect(
-      this.reservationsLink
-    ).toBeVisible();
+    await expect(this.createListingLink).toBeVisible();
+    await expect(this.reservationsLink).toBeVisible();
+    await expect(this.walletLink).toBeVisible();
+    await expect(this.favoritesLink).toBeVisible();
+    await expect(this.invoicesLink).toBeVisible();
+    await expect(this.messagesLink).toBeVisible();
     await expect(this.logoutLink).toBeVisible();
+
+    // La rubrique Voyageur ne doit pas être proposée à l'Hôte.
+    await expect(this.tripsLink).toBeHidden();
   }
 
   /**
