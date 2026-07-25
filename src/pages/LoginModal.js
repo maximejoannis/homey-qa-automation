@@ -25,7 +25,7 @@ class LoginModal {
       name: /mot de passe.*oubli/i,
     });
 
-    this.feedback = this.modal.getByText(
+  this.feedback = this.modal.getByText(
   /invalid username or email|identifiant incorrect|connexion impossible|incorrect username or password/i
     );
 
