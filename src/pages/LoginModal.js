@@ -25,9 +25,9 @@ class LoginModal {
       name: /mot de passe.*oubli/i,
     });
 
-    this.feedback = this.modal.getByText(
-    /^\s*Invalid username or email\s*$/i
-  );
+    this.unknownUsernameFeedback = this.modal.getByText(
+      /^\s*Invalid username or email\s*$/i
+    );
 
     this.passwordRequiredFeedback = this.modal.getByText(
       /the password field is empty|le champ mot de passe est vide/i
@@ -45,6 +45,7 @@ class LoginModal {
      * La saisie clavier progressive reproduit l'action utilisateur.
      */
     await this.password.click();
+
     await this.password.pressSequentially(password, {
       delay: 50,
     });
@@ -58,21 +59,50 @@ class LoginModal {
     await this.submit.click();
   }
 
-  async expectInvalidCredentials() {
+  /**
+   * Cas :
+   * Identifiant inexistant
+   */
+  async expectUnknownUsernameRejected() {
     await expect(this.modal).toBeVisible();
 
     await expect(
-      this.passwordRequiredFeedback,
-      'Le site considère le mot de passe comme vide.'
-    ).toBeHidden();
-
-    await expect(this.feedback).toBeVisible({
+      this.unknownUsernameFeedback,
+      'Le message "Invalid username or email" doit être affiché.'
+    ).toBeVisible({
       timeout: 10000,
     });
 
-    await expect(this.page).not.toHaveURL(
-      /\/dashboard\/?/i
+    await expect(this.page).not.toHaveURL(/\/dashboard\/?/i);
+  }
+
+  /**
+   * Cas :
+   * Mot de passe erroné
+   */
+  async expectWrongPasswordRejected(username) {
+    await expect(this.modal).toBeVisible();
+
+    const escapedUsername = username.replace(
+      /[.*+?^${}()|[\]\\]/g,
+      '\\$&'
     );
+
+    const feedback = this.modal.getByText(
+      new RegExp(
+        `^\\s*The password you entered for the username ${escapedUsername} is incorrect\\.\\s*$`,
+        'i'
+      )
+    );
+
+    await expect(
+      feedback,
+      'Le message "The password you entered..." doit être affiché.'
+    ).toBeVisible({
+      timeout: 10000,
+    });
+
+    await expect(this.page).not.toHaveURL(/\/dashboard\/?/i);
   }
 
   async expectRequiredFunctions() {
