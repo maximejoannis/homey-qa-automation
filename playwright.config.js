@@ -1,15 +1,21 @@
 // @ts-check
 const { defineConfig, devices } = require('@playwright/test');
-require('dotenv').config();
+require('dotenv').config({ quiet: true });
+
+if (!process.env.BASE_URL) {
+  throw new Error(
+    'BASE_URL est obligatoire. Configurez le secret GitHub BASE_URL ou votre fichier .env local.'
+  );
+}
 
 module.exports = defineConfig({
   testDir: './tests',
-  timeout: 45_000,
-  expect: { timeout: 10_000 },
+  timeout: 30_000,
+  expect: { timeout: 5000 },
   fullyParallel: false,
   forbidOnly: !!process.env.CI,
-  retries: process.env.CI ? 2 : 0,
-  workers: process.env.CI ? 1 : 1,
+  retries: 0,
+  workers: 1,
   reporter: [
     ['list'],
     ['html', { outputFolder: 'playwright-report', open: 'never' }],
