@@ -13,4 +13,6 @@ const invalidUser = {
   password: 'mot-de-passe-invalide',
 };
 
-module.exports = { traveler, host, invalidUser };
+const invalidPassword = 'mot-de-passe-volontairement-incorrect';
+
+module.exports = { traveler, host, invalidUser, invalidPassword };
