@@ -51,8 +51,13 @@ test.describe('US01 - Se connecter', () => {
     async ({ homePage, loginModal }) => {
       await homePage.goto();
       await homePage.openLogin();
-      await loginModal.login(invalidUser.username, invalidUser.password);
-      await loginModal.expectInvalidCredentials();
+
+      await loginModal.login(
+        invalidUser.username,
+        invalidUser.password
+      );
+
+      await loginModal.expectUnknownUsernameRejected();
     }
   );
 
@@ -66,8 +71,15 @@ test.describe('US01 - Se connecter', () => {
 
       await homePage.goto();
       await homePage.openLogin();
-      await loginModal.login(traveler.username, invalidPassword);
-      await loginModal.expectInvalidCredentials();
+
+      await loginModal.login(
+        traveler.username,
+        invalidPassword
+      );
+
+      await loginModal.expectWrongPasswordRejected(
+        traveler.username
+      );
     }
   );
 
@@ -81,7 +93,12 @@ test.describe('US01 - Se connecter', () => {
 
       await homePage.goto();
       await homePage.openLogin();
-      await loginModal.login(traveler.username, traveler.password);
+
+      await loginModal.login(
+        traveler.username,
+        traveler.password
+      );
+
       await dashboardPage.expectTravelerDashboard();
       await dashboardPage.logout();
     }
@@ -90,14 +107,14 @@ test.describe('US01 - Se connecter', () => {
   test.fixme(
     'TC-AUTH-008 champs vides : validation et aucune authentification',
     async () => {
-      // À activer après observation du type de validation, du message et de l'état du bouton.
+      // À activer après observation du comportement réel.
     }
   );
 
   test.fixme(
     'TC-AUTH-009 se souvenir de moi : persistance conforme à la règle métier',
     async () => {
-      // À activer après clarification de la durée et du mécanisme de persistance attendus.
+      // À activer après clarification de la règle métier.
     }
   );
 });
