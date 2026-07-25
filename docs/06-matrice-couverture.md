@@ -16,13 +16,14 @@ Les statuts décrivent le code et la testabilité. Ils ne constituent pas un ré
 
 | Référence | Catégorie | Script | Statut | Observation |
 |---|---|---|---|---|
-| TC-AUTH-001 | Passant | `tests/us01-authentication/ac01-login.spec.js` | Automatisé | Vérifie le contenu fonctionnel de la popup. |
-| TC-AUTH-002 / TC-AUTH-003 | Passant | `tests/us01-authentication/ac01-login.spec.js` | Automatisé sous condition | Connexion et rubriques Voyageur ; secrets requis. |
-| TC-AUTH-004 / TC-AUTH-005 | Passant | `tests/us01-authentication/ac01-login.spec.js` | Automatisé sous condition | Connexion et rubriques Hôte ; secrets requis. |
-| TC-AUTH-006 | Non passant | `tests/us01-authentication/ac01-login.spec.js` | Automatisé | Coordonnées invalides, erreur et absence de redirection. |
-| TC-AUTH-007 | Non passant | — | Automatisable après observation | Nécessite un identifiant valide associé à un mot de passe volontairement erroné. |
-| TC-AUTH-008 | Erreur | — | Automatisable après observation | Les validations exactes des champs vides doivent être relevées. |
-| TC-AUTH-009 | Passant | — | À clarifier | Durée et comportement de persistance non définis. |
+| TC-AUTH-001 | Passant | `tests/us01-authentication/ac01-login.spec.js` | Automatisé | Vérifie la présence des fonctions attendues dans la popup de connexion. |
+| TC-AUTH-002 / TC-AUTH-003 | Passant | `tests/us01-authentication/ac01-login.spec.js` | Automatisé sous condition | Connexion et vérification des rubriques Voyageur ; secrets `TRAVELER_USERNAME` et `TRAVELER_PASSWORD` requis. |
+| TC-AUTH-004 / TC-AUTH-005 | Passant | `tests/us01-authentication/ac01-login.spec.js` | Automatisé sous condition | Connexion et vérification des rubriques Hôte ; secrets `HOST_USERNAME` et `HOST_PASSWORD` requis. |
+| TC-AUTH-006 | Non passant | `tests/us01-authentication/ac01-login.spec.js` | Automatisé | Vérifie le refus de connexion pour un identifiant inexistant, le message `Invalid username or email` et l’absence de redirection vers le tableau de bord. |
+| TC-AUTH-007 | Non passant | `tests/us01-authentication/ac01-login.spec.js` | Automatisé sous condition | Vérifie le refus de connexion avec un identifiant Voyageur valide et un mot de passe erroné, ainsi que le message d’erreur correspondant ; `TRAVELER_USERNAME` requis. |
+| TC-AUTH-008 | Erreur | `tests/us01-authentication/ac01-login.spec.js` | Fixme | Scénario déclaré mais non exécuté ; le comportement exact des champs vides doit être observé avant activation. |
+| TC-AUTH-009 | Passant | `tests/us01-authentication/ac01-login.spec.js` | Fixme | Scénario déclaré mais non exécuté ; la règle de persistance de l’option « Se souvenir de moi » reste à clarifier. |
+| TC-AUTH-010 | Passant | `tests/us01-authentication/ac01-login.spec.js` | Automatisé sous condition | Vérifie la déconnexion d’un Voyageur authentifié ; secrets `TRAVELER_USERNAME` et `TRAVELER_PASSWORD` requis. |
 
 ## 2. Recherche
 
@@ -67,7 +68,7 @@ Les statuts décrivent le code et la testabilité. Ils ne constituent pas un ré
 
 | Module | Tests Playwright exécutables déclarés | Tests conditionnels | Tests `fixme` |
 |---|---:|---:|---:|
-| Authentification | 2 | 2 | 0 |
+| Authentification | 2 | 4 | 2 |
 | Recherche | 4 | 0 | 0 |
 | Réservation | 2 | 1 | 1 |
 | Setup d’authentification | 0 | 1 | 0 |
