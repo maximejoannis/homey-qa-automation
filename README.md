@@ -3,6 +3,7 @@
 [![Playwright Tests](https://github.com/maximejoannis/homey-qa-automation/actions/workflows/playwright.yml/badge.svg)](https://github.com/maximejoannis/homey-qa-automation/actions/workflows/playwright.yml)
 
 Rapport Allure publié : https://maximejoannis.github.io/homey-qa-automation
+
 Suite de tests end-to-end du site **Homey** réalisée avec **Playwright**, structurée selon une approche ISTQB et calquée sur l’architecture du projet SauceDemo de référence.
 
 ## Couverture
