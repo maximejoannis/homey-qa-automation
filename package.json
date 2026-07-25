@@ -1,0 +1,37 @@
+{
+  "name": "homey-qa-automation-allure",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Automatisation QA Playwright du site Homey avec traçabilité ISTQB et reporting Allure.",
+  "scripts": {
+    "test": "playwright test",
+    "test:chromium": "playwright test --project=chromium --project=chromium-authenticated",
+    "test:firefox": "playwright test --project=firefox --project=firefox-authenticated",
+    "test:headed": "playwright test --headed",
+    "test:ui": "playwright test --ui",
+    "test:smoke": "playwright test -g @smoke",
+    "test:critical": "playwright test -g @critical",
+    "test:list": "playwright test --list",
+    "results:clean": "node -e \"for (const path of ['allure-results','allure-report','playwright-report','test-results']) require('node:fs').rmSync(path,{recursive:true,force:true})\"",
+    "report": "playwright show-report",
+    "allure:generate": "allure generate allure-results --clean -o allure-report",
+    "allure:open": "allure open allure-report",
+    "allure:serve": "allure serve allure-results"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.61.1",
+    "@types/node": "^26.1.1",
+    "allure-commandline": "^2.43.0",
+    "allure-playwright": "^3.10.2",
+    "dotenv": "^17.4.2"
+  },
+  "main": "playwright.config.js",
+  "directories": {
+    "doc": "docs",
+    "test": "tests"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs"
+}

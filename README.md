@@ -1,414 +1,108 @@
 # Homey QA Automation
 
-Projet d’automatisation des tests fonctionnels de l’application **Homey** avec **Robot Framework**, **SeleniumLibrary** et **GitHub Actions**.
+[![Playwright Tests](https://github.com/maximejoannis/homey-qa-automation/actions/workflows/playwright.yml/badge.svg)](https://github.com/maximejoannis/homey-qa-automation/actions/workflows/playwright.yml)
 
-🌐 Application testée : 👉 http://livraison3.testacademy.fr/
+Rapport Allure publié : https://maximejoannis.github.io/homey-qa-automation
+Suite de tests end-to-end du site **Homey** réalisée avec **Playwright**, structurée selon une approche ISTQB et calquée sur l’architecture du projet SauceDemo de référence.
 
-Ce projet démontre une approche professionnelle de la QA Automation basée sur trois piliers :
+## Couverture
 
-* **Learn** → Comprendre, tester, analyser
-* **Build** → Structurer, factoriser, maintenir
-* **Deploy** → Industrialiser, reporter, analyser intelligemment
+- US01 — Se connecter : Voyageur, Hôte, identifiants invalides et contenu de la popup ;
+- US02 — Réaliser une recherche simple : recherche sans critère, ouverture d’une annonce, contrôles de dates et destination longue ;
+- US03 — Faire une demande de réservation : visiteur bloqué, contrôle des dates passées et refus de zéro voyageur. Le scénario de demande valide avec un Voyageur connecté est déclaré `fixme` jusqu'à ce que ses préconditions soient rejouables.
 
----
+## Prérequis
 
-## 1. Contexte du projet
+- Node.js 18+ ;
+- npm ;
+- accès au site `http://livraison3.testacademy.fr/` ;
+- identifiants Hôte pour les scénarios associés.
 
-Ce projet couvre l’automatisation de parcours métier clés :
+## Installation
 
-* **US-07 : Faire une demande de réservation**
-* **US-08 : Traiter une demande de réservation**
-* Parcours complémentaire : **Contacter l’hôte**
+```bash
+npm ci
+npx playwright install chromium firefox
+```
 
-Objectifs :
+Copier `.env.example` vers `.env` ou définir les variables dans le terminal.
+Les scénarios nécessitant un compte sont ignorés lorsque les variables correspondantes ne sont pas définies. Aucun identifiant réel n'est fourni par défaut dans le code.
 
-* automatiser les parcours critiques
-* stabiliser les tests
-* industrialiser l’exécution
-* produire un reporting exploitable
-* intégrer une analyse intelligente des résultats
+## Exécution
 
----
+```bash
+npm test
+npm run test:chromium
+npm run test:headed
+npm run test:ui
+npm run test:smoke
+npm run test:critical
+npm run results:clean
+npx playwright test --workers=2 --retries=1
+```
 
-## 2. Stack technique
+## Rapports
 
-* Robot Framework
-* SeleniumLibrary
-* Python 3.11
-* GitHub Actions
-* Selenium Standalone Chrome
-* VS Code
+```bash
+npm run report
+npm run allure:generate
+npm run allure:open
+```
 
----
-
-## 3. Structure du projet
+## Architecture
 
 ```text
-homey-qa-automation/
-├── .github/
-│   └── workflows/
-│       └── robot.yml
+.
+├── .github/workflows/playwright.yml
+├── docs/
+├── src/
+│   ├── data/
+│   ├── fixtures/
+│   └── pages/
+├── playwright/.auth/        # généré, non versionné
 ├── tests/
-│   ├── smoke.robot
-│   ├── us07_faire_demande_reservation_connecte.robot
-│   ├── us07_faire_demande_reservation_non_connecte.robot
-│   ├── us08_traiter_demande_reservation.robot
-│   └── us09_contact_hote.robot
-├── resources/
-│   ├── common.resource
-│   ├── navigation.resource
-│   ├── reservation.resource
-│   ├── contact_hote.resource
-│   └── assertions.resource
-├── variables/
-│   ├── env.robot
-│   └── data.robot
-├── tools/
-│   ├── generate_test_summary.py
-│   ├── analyze_failures.py
-│   ├── prioritize_tests.py
-│   └── notify_targets.py
-├── config/
-│   ├── test_metadata.json
-│   └── notification_rules.json
-├── results/
-├── requirements.txt
-└── README.md
+│   ├── auth.setup.js
+│   ├── us01-authentication/
+│   ├── us02-recherche/
+│   └── us03-reservation/  # tests visiteur et authentifié séparés
+├── .env.example
+├── package.json
+└── playwright.config.js
 ```
 
----
-
-## 4. Philosophie : Learn / Build / Deploy
-
-### Learn
-
-* Comprendre les parcours métier
-* Identifier les scénarios critiques
-* Analyser les erreurs
-* Stabiliser les tests
-
-### Build
-
-* Structurer le projet
-* Factoriser les keywords
-* Centraliser les locators
-* Maintenir un code propre
-
-### Deploy
-
-* Exécuter automatiquement les tests
-* Générer des rapports
-* Analyser les échecs
-* Prioriser les tests
-* Notifier les bonnes équipes
-
----
-
-## 5. Périmètre fonctionnel
-
-### US-07 — Faire une demande de réservation
-
-* affichage du module de réservation
-* sélection des dates
-* sélection des voyageurs
-* sélection des extras
-* validation du comportement utilisateur non connecté
-
-## ⚠️ Limites actuelles – US08 (Traitement de réservation)
-
-Le cas de test **US08 – Traiter une demande de réservation** est actuellement **partiellement automatisé mais exclu du run standard (quarantine)**.
-
-### 📌 Constat
-
-Le parcours utilisateur est exécutable de bout en bout (connexion → sélection → demande de réservation), mais :
-
-* l’application ne redirige pas vers une page dédiée,
-* aucun identifiant de réservation n’est exposé,
-* aucun message de confirmation stable n’est affiché,
-* l’utilisateur est redirigé vers la page d’accueil sans signal métier exploitable.
-
-### ⚠️ Impact QA
-
-Cela rend impossible la mise en place d’une validation automatique fiable basée uniquement sur ce qui est visible à l’écran, ce qui empêche une validation automatisée robuste.
-
-### ✅ Solutions possibles
-
-Pour rendre ce cas testable automatiquement, il faudrait :
-
-* un point d’observation métier côté UI (confirmation visuelle),
-* une page “Mes réservations” exploitable,
-* un message de confirmation stable,
-* ou une instrumentation spécifique pour les tests.
-
-### 🧠 Décision QA
-
-Le test est :
-
-* exécuté (parcours validé),
-* mais **exclu de la pipeline standard** afin de garantir la stabilité globale des tests.
-
-Cette décision permet de maintenir une pipeline fiable tout en documentant clairement la limite actuelle.
-
-### Contact Hôte
-
-* ouverture de la modal
-* présence des champs
-* saisie des données
-* fermeture de la modal
-* soumission du formulaire
-
----
-
-## 6. Typologie des tests
-
-| Type       | Description                       |
-| ---------- | --------------------------------- |
-| Smoke      | Tests critiques rapides           |
-| Regression | Couverture fonctionnelle complète |
-| UI         | Vérifications techniques          |
-| Quarantine | Tests instables                   |
-
----
-
-## 7. Installation
-
-```bash
-git clone https://github.com/maximejoannis/homey-qa-automation.git
-cd homey-qa-automation
-
-python -m venv .venv
-```
-
-### Activation
-
-#### Windows
-
-```bash
-.venv\Scripts\activate
-```
-
-#### Mac/Linux
-
-```bash
-source .venv/bin/activate
-```
-
-### Installation des dépendances
-
-```bash
-pip install -r requirements.txt
-```
-
----
-
-## 8. Exécution des tests
-
-### Tous les tests
-
-```bash
-robot tests
-```
-
-### Par suite
-
-```bash
-robot tests/us07_faire_demande_reservation_non_connecte.robot
-robot tests/us09_contact_hote.robot
-```
-
-### Smoke
-
-```bash
-robot --include smoke tests
-```
-
-### Regression
-
-```bash
-robot --include regression tests
-```
-
-### Sans les tests instables
-
-```bash
-robot --exclude quarantine tests
-```
-
----
-
-## 9. Reporting Robot Framework
-
-### Fichiers générés
-
-* `report.html` → synthèse
-* `log.html` → détail
-* `output.xml` → brut
-
-### En cas d’échec
-
-* screenshots
-* HTML de la page
-* logs détaillés
-
----
-
-## 10. CI / GitHub Actions
-
-Pipeline situé dans :
+## Convention d’identification
 
 ```text
-.github/workflows/robot.yml
+TC-USxx-ACxx-nn
 ```
 
-### Déclencheurs
+## Données et limites connues
 
-* push sur `main` / `develop`
-* pull request
-* lancement manuel
+- les identifiants Voyageur et Hôte doivent être fournis par variables d’environnement ;
+- le site ne permet pas actuellement de créer librement de nouveaux comptes Hôte, ce qui limite l’isolation des données ;
+- la suite s’exécute avec un seul worker pour éviter les collisions de réservations sur un environnement partagé ;
+- un `storageState` Voyageur est généré par `tests/auth.setup.js` et réutilisé uniquement par le scénario authentifié ;
+- aucun nettoyage des demandes n'est annoncé : le site ne fournit pas de mécanisme de suppression ou de remise à zéro accessible au projet ;
+- après huit demandes traitées, l'Hôte ne reçoit plus de nouvelle demande et aucun autre compte Hôte ne peut être créé.
 
-### Fonctionnement
+## Résultats de campagne
 
-* démarrage Selenium
-* exécution Robot
-* génération du report
-* upload des artefacts
+Les résultats présents dans un rapport doivent être rattachés à une exécution datée. La commande `npm run results:clean` supprime les résultats générés précédemment avant une nouvelle campagne.
 
----
+Le dépôt ne présente pas les résultats historiques cumulés comme le statut courant de la suite.
+## Configuration GitHub
 
-## 11. Reporting avancé
+Dans **Settings → Secrets and variables → Actions**, créer les secrets de dépôt suivants :
 
-Le projet produit plusieurs niveaux d’analyse :
+- `BASE_URL`
+- `TRAVELER_USERNAME`
+- `TRAVELER_PASSWORD`
+- `HOST_USERNAME`
+- `HOST_PASSWORD`
+- `TEST_DESTINATION`
 
-### 1. Reporting standard
+Créer également la variable de dépôt `TEST_LISTING_INDEX` (valeur recommandée : `0`).
 
-* report.html
-* log.html
-* output.xml
+Dans **Settings → Pages**, sélectionner **GitHub Actions** comme source de publication. Le workflow exécute Chromium, génère les rapports Playwright et Allure, conserve les artefacts 30 jours et publie Allure sur GitHub Pages pour les push sur `main` et les lancements manuels.
 
-### 2. Reporting synthétique
-
-* summary.md
-
-### 3. Analyse intelligente
-
-* failure_analysis.json
-* test_priorities.json
-* notifications.json
-
----
-
-## 12. Analyse intelligente des tests (IA-ready)
-
-### Analyse automatique des échecs
-
-Classification des erreurs :
-
-* locator cassé
-* timeout
-* erreur applicative
-* erreur de test
-* problème d’environnement
-
-### Priorisation intelligente
-
-Score basé sur :
-
-* criticité métier
-* historique des échecs
-* type de test
-* fréquence d’exécution
-
-### Notification ciblée
-
-* QA → erreur de test
-* Dev Front → locator cassé
-* Dev Back → erreur applicative
-* DevOps → problème environnement
-
----
-
-## 13. Bonnes pratiques appliquées
-
-* séparation des responsabilités
-* centralisation des locators
-* keywords réutilisables
-* gestion robuste des clics
-* screenshots en cas d’échec
-* CI/CD automatisée
-* analyse post-exécution
-
----
-
-## 14. Limites actuelles
-
-* dépendance à l’environnement
-* sélecteurs parfois fragiles
-* tests UI sensibles aux changements DOM
-* composants dynamiques (calendrier)
-
----
-
-## 15. Roadmap
-
-### Court terme
-
-* stabilisation complète
-* enrichissement des tests
-* amélioration des locators
-
-### Moyen terme
-
-* ajout US-08 complet
-* amélioration du reporting
-
-### Long terme
-
-* migration Cypress
-* IA avancée
-* notifications Slack / Teams
-
----
-
-## 16. Objectif portfolio
-
-Ce projet démontre :
-
-* automatisation de tests fonctionnels
-* structuration d’un projet QA
-* utilisation du CI/CD
-* analyse avancée des résultats
-* approche industrielle de la qualité
-
----
-
-## 17. Auteur
-
-**Maxime Joannis**
-
-QA Automation Engineer en progression
-
-## 18. Reporting avancé
-
-Le projet produit plusieurs niveaux de reporting :
-
-### Reporting d’exécution
-
-* `report.html`
-* `log.html`
-* `output.xml`
-
-### Reporting synthétique
-
-* `summary.md`
-
-### Analyse intelligente
-
-* `failure_analysis.json`
-* `test_priorities.json`
-* `notifications.json`
-
-### Finalité
-
-* comprendre rapidement l’état de la campagne
-* identifier les causes probables d’échec
-* cibler les tests prioritaires
+> Le fichier `.env` est strictement local et ignoré par Git. Ne jamais le committer. Si des identifiants ont déjà été publiés, les révoquer ou les changer immédiatement.
