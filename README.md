@@ -2,80 +2,221 @@
 
 [![Playwright Tests](https://github.com/maximejoannis/homey-qa-automation/actions/workflows/playwright.yml/badge.svg)](https://github.com/maximejoannis/homey-qa-automation/actions/workflows/playwright.yml)
 
-Rapport Allure publié : https://maximejoannis.github.io/homey-qa-automation
+Suite de tests End-to-End réalisée avec **Playwright** selon une approche **Page Object Model (POM)** et conforme aux bonnes pratiques **ISTQB**.
 
-Suite de tests end-to-end du site **Homey** réalisée avec **Playwright**, structurée selon une approche ISTQB et calquée sur l’architecture du projet SauceDemo de référence.
+Le projet automatise les principaux parcours utilisateurs de Homey, met en œuvre une intégration continue avec **GitHub Actions** et publie automatiquement les rapports **Allure** sur **GitHub Pages**.
 
-## Couverture
+---
 
-- US01 — Se connecter : Voyageur, Hôte, identifiants invalides et contenu de la popup ;
-- US02 — Réaliser une recherche simple : recherche sans critère, ouverture d’une annonce, contrôles de dates et destination longue ;
-- US03 — Faire une demande de réservation : visiteur bloqué, contrôle des dates passées et refus de zéro voyageur. Le scénario de demande valide avec un Voyageur connecté est déclaré `fixme` jusqu'à ce que ses préconditions soient rejouables.
+# Rapport Allure
 
-## Prérequis
+Le rapport est publié automatiquement après chaque exécution du pipeline sur la branche `main`.
 
-- Node.js 18+ ;
-- npm ;
-- accès au site `http://livraison3.testacademy.fr/` ;
-- identifiants Hôte pour les scénarios associés.
+**URL :**
 
-## Installation
+https://maximejoannis.github.io/homey-qa-automation/
 
-```bash
-npm ci
-npx playwright install chromium firefox
-```
+---
 
-Copier `.env.example` vers `.env` ou définir les variables dans le terminal.
-Les scénarios nécessitant un compte sont ignorés lorsque les variables correspondantes ne sont pas définies. Aucun identifiant réel n'est fourni par défaut dans le code.
+# Fonctionnalités couvertes
 
-## Exécution
+## US01 — Authentification
 
-```bash
-npm test
-npm run test:chromium
-npm run test:headed
-npm run test:ui
-npm run test:smoke
-npm run test:critical
-npm run results:clean
-npx playwright test --workers=2 --retries=1
-```
+Couverture actuelle :
 
-## Rapports
+* connexion Voyageur ;
+* connexion Hôte ;
+* identifiants invalides ;
+* vérification du contenu de la fenêtre de connexion.
 
-```bash
-npm run report
-npm run allure:generate
-npm run allure:open
-```
+## US02 — Recherche
 
-## Architecture
+Couverture actuelle :
+
+* recherche sans critère ;
+* ouverture d'une annonce ;
+* contrôle des champs de dates ;
+* validation d'une destination longue.
+
+## US03 — Réservation
+
+Couverture actuelle :
+
+* visiteur non authentifié ;
+* contrôle des dates passées ;
+* refus d'une réservation avec zéro voyageur.
+
+Le scénario de réservation valide avec un Voyageur authentifié est volontairement déclaré `test.fixme()` car il dépend d'un environnement partagé dont les données ne sont pas réinitialisées automatiquement.
+
+---
+
+# Stratégie de test
+
+Les cas de tests sont organisés selon une approche ISTQB :
+
+* cas passants ;
+* cas non passants ;
+* cas d'erreur.
+
+La documentation distingue également :
+
+* les scénarios automatisés ;
+* les scénarios automatisables ;
+* les scénarios nécessitant une validation fonctionnelle ;
+* les scénarios dépendant de données non maîtrisées.
+
+---
+
+# Architecture du projet
 
 ```text
 .
-├── .github/workflows/playwright.yml
+├── .github/
+│   └── workflows/
+│       └── playwright.yml
 ├── docs/
 ├── src/
 │   ├── data/
 │   ├── fixtures/
 │   └── pages/
-├── playwright/.auth/        # généré, non versionné
 ├── tests/
 │   ├── auth.setup.js
 │   ├── us01-authentication/
 │   ├── us02-recherche/
-│   └── us03-reservation/  # tests visiteur et authentifié séparés
-├── .env.example
+│   └── us03-reservation/
+├── playwright.config.js
 ├── package.json
-└── playwright.config.js
+├── .env.example
+└── README.md
 ```
 
-## Convention d’identification
+---
 
-```text
-TC-USxx-ACxx-nn
+# Technologies
+
+* Playwright
+* JavaScript
+* Node.js
+* GitHub Actions
+* Allure Report
+* GitHub Pages
+
+---
+
+# Installation
+
+```bash
+npm ci
+npx playwright install
 ```
+
+---
+
+# Configuration
+
+Créer un fichier `.env` à partir de `.env.example` pour une exécution locale.
+
+En intégration continue, les variables sont fournies par les **GitHub Secrets**.
+
+Secrets utilisés :
+
+* `BASE_URL`
+* `TRAVELER_USERNAME`
+* `TRAVELER_PASSWORD`
+* `HOST_USERNAME`
+* `HOST_PASSWORD`
+
+Variable GitHub :
+
+* `TEST_LISTING_INDEX`
+
+Aucun identifiant n'est stocké dans le dépôt.
+
+---
+
+# Exécution des tests
+
+Suite complète :
+
+```bash
+npm test
+```
+
+Chromium :
+
+```bash
+npm run test:chromium
+```
+
+Mode UI :
+
+```bash
+npm run test:ui
+```
+
+Mode Headed :
+
+```bash
+npm run test:headed
+```
+
+Tests Smoke :
+
+```bash
+npm run test:smoke
+```
+
+Tests Critical :
+
+```bash
+npm run test:critical
+```
+
+---
+
+# Rapports
+
+Rapport Playwright :
+
+```bash
+npm run report
+```
+
+Rapport Allure :
+
+```bash
+npm run allure:generate
+npm run allure:open
+```
+
+---
+
+# Intégration Continue
+
+À chaque Push ou Pull Request sur `main`, GitHub Actions :
+
+1. installe les dépendances ;
+2. installe Playwright ;
+3. exécute les tests ;
+4. génère les rapports Playwright et Allure ;
+5. publie le rapport Allure sur GitHub Pages ;
+6. archive les rapports en artefacts GitHub.
+
+---
+
+# Documentation
+
+Le dossier `docs/` contient notamment :
+
+* stratégie de test ;
+* User Stories ;
+* critères d'acceptation ;
+* cas de tests ISTQB ;
+* matrice de couverture ;
+* rapport d'exécution ;
+* classification des cas passants, non passants et d'erreur.
+
+---
 
 ## Données et limites connues
 
@@ -85,3 +226,9 @@ TC-USxx-ACxx-nn
 - un `storageState` Voyageur est généré par `tests/auth.setup.js` et réutilisé uniquement par le scénario authentifié ;
 - aucun nettoyage des demandes n'est annoncé : le site ne fournit pas de mécanisme de suppression ou de remise à zéro accessible au projet ;
 - après huit demandes traitées, l'Hôte ne reçoit plus de nouvelle demande et aucun autre compte Hôte ne peut être créé.
+
+---
+
+# Auteur
+
+Projet réalisé dans le cadre d'une démarche QA Automation avec Playwright, en appliquant les bonnes pratiques de structuration, d'automatisation et de documentation inspirées de l'ISTQB.
