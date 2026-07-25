@@ -3,7 +3,7 @@ const { expect } = require('@playwright/test');
 class LoginModal {
   constructor(page) {
     this.page = page;
-    this.modal = page.getByRole('dialog');
+    this.modal = page.locator('#modal-login');
 
     this.username = this.modal.getByRole('textbox', {
       name: /nom d'utilisateur ou email/i,
@@ -25,9 +25,9 @@ class LoginModal {
       name: /mot de passe.*oubli/i,
     });
 
-     this.feedback = this.page.getByText(
-      /^\s*Invalid username or email\s*$/i
-    );
+    this.feedback = this.modal.getByText(
+    /^\s*Invalid username or email\s*$/i
+  );
 
     this.passwordRequiredFeedback = this.modal.getByText(
       /the password field is empty|le champ mot de passe est vide/i
