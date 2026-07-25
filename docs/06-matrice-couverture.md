@@ -2,36 +2,84 @@
 
 ## Légende
 
-- **Implémenté** : un test automatisé correspondant est présent.
-- **Implémenté sous condition** : le test est présent mais nécessite des identifiants ou des données d'environnement.
-- **Fixme** : le scénario est déclaré dans la suite mais volontairement non exécuté, avec justification dans le code.
-- **Non couvert** : aucun test automatisé correspondant n'est présent.
+- **Automatisé** : un test Playwright correspondant est présent.
+- **Automatisé sous condition** : le test est présent mais dépend de secrets ou d’un état d’environnement.
+- **Fixme** : scénario déclaré dans la suite mais volontairement non exécuté.
+- **Automatisable après observation** : résultat attendu défini, mais comportement réel et sélecteurs à relever avant implémentation.
+- **Automatisable avec données maîtrisées** : nécessite un jeu de données stable ou réinitialisable.
+- **À clarifier** : règle ou résultat attendu insuffisamment défini.
+- **Non automatisable durablement actuellement** : l’environnement empêche une exécution répétable.
 
-Les statuts de cette matrice décrivent le code présent. Ils ne constituent pas un résultat d'exécution. Les statuts OK, KO, ignoré ou bloqué doivent provenir d'une campagne datée.
+Les statuts décrivent le code et la testabilité. Ils ne constituent pas un résultat d’exécution.
 
-## Couverture présente dans le projet
+## 1. Authentification
 
-| Cas | User Story / contrôle | Script | Statut actuel | Observation factuelle |
+| Référence | Catégorie | Script | Statut | Observation |
 |---|---|---|---|---|
-| TC-US01-AC01-01 | Connexion Voyageur | `tests/us01-authentication/ac01-login.spec.js` | Implémenté sous condition | Nécessite les variables `TRAVELER_USERNAME` et `TRAVELER_PASSWORD`. |
-| TC-US01-AC01-02 | Connexion Hôte | `tests/us01-authentication/ac01-login.spec.js` | Implémenté sous condition | Nécessite les variables `HOST_USERNAME` et `HOST_PASSWORD`. |
-| TC-US01-AC02-01 | Coordonnées invalides | `tests/us01-authentication/ac01-login.spec.js` | Implémenté | Vérifie le message d'erreur, le maintien de la popup et l'absence de redirection vers le tableau de bord. |
-| TC-US01-AC02-02 | Contenu de la popup de connexion | `tests/us01-authentication/ac01-login.spec.js` | Implémenté | Vérifie identifiant, mot de passe, mémorisation, mot de passe oublié et bouton de connexion. |
-| TC-US02-AC01-01 | Recherche sans critère | `tests/us02-recherche/ac01-recherche-simple.spec.js` | Implémenté | Vérifie la navigation, la présence du bouton de recherche et d'au moins un résultat. |
-| TC-US02-AC02-01 | Ouverture d'une annonce | `tests/us02-recherche/ac01-recherche-simple.spec.js` | Implémenté | Vérifie l'ouverture d'une page contenant le formulaire de réservation. |
-| TC-US02-AC03-01 | Champs de dates visibles et éditables | `tests/us02-recherche/ac01-recherche-simple.spec.js` | Implémenté | Vérifie la visibilité et l'éditabilité des champs de dates de la page d'accueil. |
-| TC-US02-AC03-02 | Destination de plus de 20 caractères | `tests/us02-recherche/ac01-recherche-simple.spec.js` | Implémenté | Vérifie que la destination longue est effectivement sélectionnée. |
-| TC-US03-AC01-01 | Visiteur non connecté bloqué | `tests/us03-reservation/ac01-demande-reservation.spec.js` | Implémenté | Vérifie qu'aucun succès de réservation n'est affiché et que l'authentification est demandée ou que la navigation reste bloquée. |
-| TC-US03-AC02-01 | Dates passées non sélectionnables | `tests/us03-reservation/ac01-demande-reservation.spec.js` | Implémenté | Contrôle les dates passées présentées par le calendrier. |
-| TC-US03-AC01-02 | Demande de réservation Voyageur connecté | `tests/us03-reservation/ac02-demande-reservation-connecte.auth.spec.js` | Fixme | Le code documente l'anomalie applicative et l'absence d'environnement réinitialisable. |
-| TC-US03-AC02-02 | Zéro voyageur refusé | `tests/us03-reservation/ac02-demande-reservation-connecte.auth.spec.js` | Implémenté sous condition | Utilise le `storageState` Voyageur et nécessite ses identifiants. |
+| TC-AUTH-001 | Passant | `tests/us01-authentication/ac01-login.spec.js` | Automatisé | Vérifie le contenu fonctionnel de la popup. |
+| TC-AUTH-002 / TC-AUTH-003 | Passant | `tests/us01-authentication/ac01-login.spec.js` | Automatisé sous condition | Connexion et rubriques Voyageur ; secrets requis. |
+| TC-AUTH-004 / TC-AUTH-005 | Passant | `tests/us01-authentication/ac01-login.spec.js` | Automatisé sous condition | Connexion et rubriques Hôte ; secrets requis. |
+| TC-AUTH-006 | Non passant | `tests/us01-authentication/ac01-login.spec.js` | Automatisé | Coordonnées invalides, erreur et absence de redirection. |
+| TC-AUTH-007 | Non passant | — | Automatisable après observation | Nécessite un identifiant valide associé à un mot de passe volontairement erroné. |
+| TC-AUTH-008 | Erreur | — | Automatisable après observation | Les validations exactes des champs vides doivent être relevées. |
+| TC-AUTH-009 | Passant | — | À clarifier | Durée et comportement de persistance non définis. |
 
-## Cas limités ou non automatisables sur l'environnement
+## 2. Recherche
 
-| Fonctionnalité | Statut | Justification |
-|---|---|---|
-| Traitement d'une nouvelle demande côté Hôte après huit demandes déjà traitées | Non automatisable durablement | Au-delà de huit demandes traitées, l'Hôte ne reçoit plus de nouvelle demande. |
-| Création d'un autre compte Hôte pour réinitialiser le parcours | Non automatisable | Le site ne permet pas de créer un autre compte Hôte dans le contexte du projet. |
-| Nettoyage ou remise à zéro des demandes traitées | Non disponible | Aucun mécanisme de suppression, de réinitialisation ou d'accès au stockage n'est fourni au projet. |
+| Référence | Catégorie | Script | Statut | Observation |
+|---|---|---|---|---|
+| TC-SEARCH-001 | Passant | `tests/us02-recherche/ac01-recherche-simple.spec.js` | Automatisé | Vérifie navigation et présence d’au moins un résultat. |
+| TC-SEARCH-002 | Passant | — | Automatisable avec données maîtrisées | Il faut connaître une destination et les annonces attendues. |
+| TC-SEARCH-003 | Passant / limite | `tests/us02-recherche/ac01-recherche-simple.spec.js` | Automatisé | Vérifie la sélection d’une destination de plus de 20 caractères. |
+| TC-SEARCH-004 | Non passant | — | Automatisable après observation | Message et comportement exacts non relevés dans le code. |
+| TC-SEARCH-005 | Non passant | — | Automatisable après observation | Validation de dates incohérentes à observer. |
+| TC-SEARCH-006 | Passant | — | Automatisable avec données maîtrisées | Disponibilités connues nécessaires. |
+| TC-SEARCH-007 / 008 | Passant / non passant | — | Automatisable avec données maîtrisées | Capacités des annonces nécessaires. |
+| TC-SEARCH-009 | Passant | — | Automatisable avec données maîtrisées | Règle animaux et annonces correspondantes nécessaires. |
+| TC-SEARCH-010 | Passant | — | Automatisable avec données maîtrisées | Jeu de données permettant de vérifier la logique ET nécessaire. |
+| TC-SEARCH-011 | Non passant | — | Automatisable avec données maîtrisées | Combinaison valide sans résultat nécessaire. |
+| TC-SEARCH-012 | Erreur | — | Automatisable après observation | Valeur invalide et message exacts à relever. |
+| TC-SEARCH-013 | Passant | — | Automatisable après observation | Valeurs rappelées et sélecteurs à relever. |
+| TC-SEARCH-014 | Interface | — | Automatisation partielle | Contrôle visuel ou comparaison de disposition recommandé. |
+| TC-SEARCH-015 | Passant | `tests/us02-recherche/ac01-recherche-simple.spec.js` | Partiellement automatisé | L’ouverture est couverte ; la mise en évidence cartographique ne l’est pas. |
+| Contrôle des champs de dates | Passant | `tests/us02-recherche/ac01-recherche-simple.spec.js` | Automatisé | Visibilité et éditabilité des deux champs. |
 
-Ces limitations sont des contraintes de testabilité de l'environnement. Elles ne doivent pas être remplacées par des données, comptes, API ou comportements inventés.
+## 3. Réservation
+
+| Référence | Catégorie | Script | Statut | Observation |
+|---|---|---|---|---|
+| TC-BOOK-001 | Passant | `tests/us03-reservation/ac02-demande-reservation-connecte.auth.spec.js` | Fixme | Transmission côté Hôte et réinitialisation de l’environnement indisponibles. |
+| TC-BOOK-002 | Non passant | `tests/us03-reservation/ac01-demande-reservation.spec.js` | Automatisé | Un visiteur ne peut pas finaliser. |
+| TC-BOOK-003 | Passant / transition | — | À clarifier | Reprise des données après connexion non définie. |
+| TC-BOOK-004 | Non passant | `tests/us03-reservation/ac01-demande-reservation.spec.js` | Automatisé | Vérifie que les dates passées ne sont pas proposées. |
+| TC-BOOK-005 | Non passant | — | Automatisable après observation | Comportement date égale à confirmer sur l’interface. |
+| TC-BOOK-006 | Non passant | — | Automatisable après observation | Message et blocage exacts à observer. |
+| TC-BOOK-007 | Non passant | `tests/us03-reservation/ac02-demande-reservation-connecte.auth.spec.js` | Automatisé sous condition | Storage state Voyageur et secrets requis. |
+| TC-BOOK-008 | Passant | — | Automatisable avec données maîtrisées | Période disponible et annonce stable nécessaires. |
+| TC-BOOK-009 | Non passant | — | Automatisable avec données maîtrisées | Capacité connue nécessaire. |
+| TC-BOOK-010 | Non passant | — | Automatisable après observation | Caractère obligatoire du message à confirmer par l’interface. |
+| TC-BOOK-011 | Non passant / état | — | Automatisable avec environnement réinitialisable | Nécessite deux comptes et une période maîtrisée. |
+| TC-BOOK-012 à 014 | Passant / navigation | — | Automatisable après observation | Menus et sélecteurs Hôte à relever. |
+| TC-BOOK-015 à 018 | Erreur / régression | — | Non automatisable durablement actuellement | État persistant et limite observée au-delà de huit demandes. |
+| TC-BOOK-019 | Erreur / E2E | — | Non automatisable durablement actuellement | Anomalie connue de visibilité du message côté Hôte. |
+
+## 4. Synthèse quantitative du dépôt
+
+| Module | Tests Playwright exécutables déclarés | Tests conditionnels | Tests `fixme` |
+|---|---:|---:|---:|
+| Authentification | 2 | 2 | 0 |
+| Recherche | 4 | 0 | 0 |
+| Réservation | 2 | 1 | 1 |
+| Setup d’authentification | 0 | 1 | 0 |
+
+La commande Playwright peut compter les projets navigateurs séparément. Cette synthèse compte les scénarios sources, pas leurs déclinaisons par projet.
+
+## 5. Contraintes de testabilité
+
+| Contrainte | Effet |
+|---|---|
+| Pas de remise à zéro des réservations | Les scénarios de création ne sont pas répétables durablement. |
+| Pas de création d’un nouvel Hôte | Impossible d’isoler les campagnes avec un compte neuf. |
+| Blocage observé au-delà de huit demandes | Les tests de limite consomment l’état et ne peuvent pas être rejoués proprement. |
+| Message Voyageur absent côté Hôte | Le parcours E2E attendu ne peut pas être validé de manière fiable. |
+| Données de recherche non contractualisées | Les filtres ne peuvent pas être vérifiés précisément sans annonces connues. |

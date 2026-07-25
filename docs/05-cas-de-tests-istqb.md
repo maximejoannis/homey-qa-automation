@@ -28,7 +28,7 @@
 - **Données** : commune contenant des annonces.
 - **Étapes** : saisir la commune puis rechercher.
 - **Résultat attendu** : toutes les annonces affichées appartiennent à la commune recherchée.
-- **Automatisation** : Oui.
+- **Automatisation** : Automatisable avec données maîtrisées.
 
 ### TC-SEARCH-003 — Destination supérieure à 20 caractères
 
@@ -45,7 +45,7 @@
 - **Données** : `J-1`.
 - **Étapes** : tenter de sélectionner ou saisir `J-1` comme date de début.
 - **Résultat attendu** : la date est indisponible ou rejetée ; la recherche n’est pas lancée ; un message de validation est visible.
-- **Automatisation** : Oui.
+- **Automatisation** : Automatisable après observation du contrôle et du message.
 
 ### TC-SEARCH-005 — Date de fin antérieure à la date de début
 
@@ -53,7 +53,7 @@
 - **Type** : négatif
 - **Données** : début `J+10`, fin `J+5`.
 - **Résultat attendu** : la recherche est bloquée avec un message explicite.
-- **Automatisation** : Oui.
+- **Automatisation** : Automatisable après observation du contrôle et du message.
 
 ### TC-SEARCH-006 — Recherche par période disponible
 
@@ -61,7 +61,7 @@
 - **Type** : positif
 - **Données** : période future connue comme disponible pour certaines annonces.
 - **Résultat attendu** : seules les annonces disponibles pendant toute la période sont affichées.
-- **Automatisation** : Oui, sous réserve de données maîtrisées.
+- **Automatisation** : Automatisable avec données maîtrisées.
 
 ### TC-SEARCH-007 — Capacité égale au besoin
 
@@ -69,7 +69,7 @@
 - **Type** : valeur limite
 - **Données** : 4 voyageurs, annonce de capacité 4.
 - **Résultat attendu** : l’annonce est incluse.
-- **Automatisation** : Oui.
+- **Automatisation** : Automatisable avec données maîtrisées.
 
 ### TC-SEARCH-008 — Capacité inférieure au besoin
 
@@ -77,7 +77,7 @@
 - **Type** : négatif
 - **Données** : 5 voyageurs, annonce de capacité 4.
 - **Résultat attendu** : l’annonce est exclue.
-- **Automatisation** : Oui.
+- **Automatisation** : Automatisable avec données maîtrisées.
 
 ### TC-SEARCH-009 — Recherche avec animal
 
@@ -85,7 +85,7 @@
 - **Type** : table de décision
 - **Données** : animal = oui.
 - **Résultat attendu** : seules les annonces autorisant les animaux sont affichées.
-- **Automatisation** : Oui.
+- **Automatisation** : Automatisable avec données maîtrisées.
 
 ### TC-SEARCH-010 — Recherche multicritère
 
@@ -93,7 +93,7 @@
 - **Type** : table de décision, E2E
 - **Données** : destination, période, adultes, enfants, animal.
 - **Résultat attendu** : chaque annonce respecte l’ensemble des critères ; aucun critère n’est traité en logique OU.
-- **Automatisation** : Oui.
+- **Automatisation** : Automatisable avec données maîtrisées.
 
 ### TC-SEARCH-011 — Aucun résultat
 
@@ -101,7 +101,7 @@
 - **Type** : négatif fonctionnel
 - **Données** : combinaison valide sans annonce correspondante.
 - **Résultat attendu** : la page de résultats s’affiche avec une liste vide et un état « aucun résultat » cohérent.
-- **Automatisation** : Oui.
+- **Automatisation** : Automatisable avec données maîtrisées.
 
 ### TC-SEARCH-012 — Critère invalide
 
@@ -109,14 +109,14 @@
 - **Type** : négatif
 - **Données** : valeur de date invalide ou incohérente.
 - **Résultat attendu** : aucune navigation vers les résultats ; message d’erreur visible.
-- **Automatisation** : Oui.
+- **Automatisation** : Automatisable après observation du comportement réel.
 
 ### TC-SEARCH-013 — Rappel des critères
 
 - **Priorité** : P2
 - **Type** : interface
 - **Résultat attendu** : la barre de recherche des résultats reprend exactement les critères soumis.
-- **Automatisation** : Oui.
+- **Automatisation** : Automatisable après observation des sélecteurs et valeurs rappelées.
 
 ### TC-SEARCH-014 — Carte et liste
 
@@ -187,14 +187,14 @@
 - **Type** : partition négative
 - **Données** : utilisateur valide + mot de passe erroné.
 - **Résultat attendu** : même résultat que TC-AUTH-006, sans divulguer si le compte existe.
-- **Automatisation** : Oui.
+- **Automatisation** : Automatisable après observation avec un compte valide.
 
 ### TC-AUTH-008 — Champs vides
 
 - **Priorité** : P2
 - **Type** : négatif, validation
 - **Résultat attendu** : validation locale ou serveur ; aucune authentification.
-- **Automatisation** : Oui.
+- **Automatisation** : Automatisable après observation des validations exactes.
 
 ### TC-AUTH-009 — Se souvenir de moi
 
@@ -221,7 +221,7 @@
   6. Se connecter comme Hôte.
   7. Ouvrir Réservations puis Messages.
 - **Résultat attendu** : confirmation Voyageur ; nouvelle réservation Hôte ; nouveau message Hôte avec contenu identifiable.
-- **Automatisation** : Oui, test prioritaire.
+- **Automatisation** : Déclaré en `fixme` ; non exécutable durablement sur l’environnement actuel.
 - **Risque connu** : AK-03 provoque actuellement l’échec de la vérification message.
 
 ### TC-BOOK-002 — Visiteur non connecté
@@ -238,7 +238,7 @@
 - **Type** : transition d’état
 - **Étapes** : commencer sans session, être invité à se connecter, se connecter comme Voyageur.
 - **Résultat attendu** : comportement clarifié : reprise des données ou retour contrôlé ; aucune création en double.
-- **Automatisation** : Oui après clarification métier.
+- **Automatisation** : À clarifier avant automatisation.
 
 ### TC-BOOK-004 — Date de début passée
 
@@ -254,7 +254,7 @@
 - **Type** : valeur limite
 - **Données** : début = fin = `J+20`.
 - **Résultat attendu** : demande bloquée car la fin doit être postérieure.
-- **Automatisation** : Oui.
+- **Automatisation** : Automatisable après observation du comportement réel.
 
 ### TC-BOOK-006 — Date de fin antérieure
 
@@ -262,7 +262,7 @@
 - **Type** : négatif
 - **Données** : début `J+20`, fin `J+19`.
 - **Résultat attendu** : demande bloquée et message de validation.
-- **Automatisation** : Oui.
+- **Automatisation** : Automatisable après observation du comportement réel.
 
 ### TC-BOOK-007 — Zéro voyageur
 
@@ -278,7 +278,7 @@
 - **Type** : valeur limite positive
 - **Données** : total = 1.
 - **Résultat attendu** : demande autorisée si les autres données sont valides.
-- **Automatisation** : Oui.
+- **Automatisation** : Automatisable avec données maîtrisées.
 
 ### TC-BOOK-009 — Voyageurs au-dessus de la capacité
 
@@ -286,14 +286,14 @@
 - **Type** : négatif
 - **Données** : capacité annonce + 1.
 - **Résultat attendu** : demande impossible ou annonce non proposée ; aucun enregistrement créé.
-- **Automatisation** : Oui.
+- **Automatisation** : Automatisable avec données maîtrisées.
 
 ### TC-BOOK-010 — Message vide
 
 - **Priorité** : P1
 - **Type** : négatif
 - **Résultat attendu** : demande bloquée et message obligatoire indiqué.
-- **Automatisation** : Oui.
+- **Automatisation** : Automatisable après confirmation du caractère obligatoire.
 
 ### TC-BOOK-011 — Période déjà réservée
 
@@ -302,21 +302,21 @@
 - **Préconditions** : une première réservation bloque une période.
 - **Étapes** : avec un autre Voyageur, tenter de réserver la même période.
 - **Résultat attendu** : période indisponible et aucune seconde réservation concurrente.
-- **Automatisation** : Oui, en séquentiel.
+- **Automatisation** : Automatisable avec environnement réinitialisable.
 
 ### TC-BOOK-012 — Accès Réservations via menu latéral
 
 - **Priorité** : P2
 - **Type** : navigation
 - **Résultat attendu** : page Réservations accessible depuis le menu latéral Hôte.
-- **Automatisation** : Oui.
+- **Automatisation** : Automatisable après observation des menus Hôte.
 
 ### TC-BOOK-013 — Accès Messages via menu latéral
 
 - **Priorité** : P2
 - **Type** : navigation
 - **Résultat attendu** : page Messages accessible depuis le menu latéral Hôte.
-- **Automatisation** : Oui.
+- **Automatisation** : Automatisable après observation des menus Hôte.
 
 ### TC-BOOK-014 — Accès via menu utilisateur
 
@@ -324,7 +324,7 @@
 - **Type** : navigation, survol
 - **Étapes** : survoler le nom d’utilisateur puis ouvrir Réservations et Messages.
 - **Résultat attendu** : les deux pages sont accessibles.
-- **Automatisation** : Oui.
+- **Automatisation** : Automatisable après observation des menus Hôte.
 
 ### TC-BOOK-015 — 7e demande
 
@@ -332,7 +332,7 @@
 - **Type** : limite, régression
 - **Préconditions** : six demandes existantes dans le périmètre qui déclenche l’anomalie.
 - **Résultat attendu** : la 7e demande valide est créée avec message et réservation.
-- **Automatisation** : Oui, environnement dédié.
+- **Automatisation** : Non automatisable durablement sur l’environnement actuel.
 
 ### TC-BOOK-016 — 8e demande
 
@@ -340,7 +340,7 @@
 - **Type** : limite, régression
 - **Préconditions** : sept demandes existantes.
 - **Résultat attendu** : la 8e demande valide est créée et traitable.
-- **Automatisation** : Oui, environnement dédié.
+- **Automatisation** : Non automatisable durablement sur l’environnement actuel.
 
 ### TC-BOOK-017 — 9e demande
 
@@ -349,7 +349,7 @@
 - **Préconditions** : huit demandes existantes.
 - **Résultat attendu** : en l’absence de limite métier explicite, la 9e demande est créée et traitable, avec réservation et message visibles.
 - **Résultat actuellement probable** : échec lié à AK-01.
-- **Automatisation** : Oui, mais à exécuter en dernier ou sur données isolées.
+- **Automatisation** : Non automatisable durablement sur l’environnement actuel.
 
 ### TC-BOOK-018 — Traitement Hôte au-delà de 8
 
@@ -359,7 +359,7 @@
 - **Étapes** : ouvrir et traiter la 9e demande côté Hôte.
 - **Résultat attendu** : la demande est accessible et son traitement aboutit conformément au workflow.
 - **Résultat actuellement probable** : échec lié à AK-01.
-- **Automatisation** : Oui après définition précise des actions de traitement.
+- **Automatisation** : Non automatisable durablement sur l’environnement actuel.
 
 ### TC-BOOK-019 — Visibilité du message Hôte
 
@@ -368,7 +368,7 @@
 - **Données** : message unique contenant un identifiant de test.
 - **Résultat attendu** : le message apparaît dans la boîte Messages de l’Hôte et est rattachable à la réservation.
 - **Résultat actuellement probable** : échec lié à AK-03.
-- **Automatisation** : Oui.
+- **Automatisation** : Non automatisable durablement tant que l’anomalie persiste.
 
 ## 5. Recommandations d’implémentation Playwright
 
